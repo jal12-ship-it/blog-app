@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http:/ /www.w3.org/1999/xhtml"
+	  	xmlns:th="http:/ /www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We"
+	crossorigin="anonymous">
+<script
+	src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+	integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp"
+	crossorigin="anonymous"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
+	integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/"
+	crossorigin="anonymous"></script>
+<link rel="stylesheet" th:href="@{/styles.css}" />
+<script src="https://kit.fontawesome.com/e776bd7806.js"
+	crossorigin="anonymous"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Blog</title>
+</head>
+
+<body>
+    <section id="search-bar">
+        	<a th:href="@{/edit}" id="edit-btn" class="btn btn-info"><i class="fa-solid fa-pen-to-square"></i></a>
+
+		<form method="GET" th:action="@{/}">
+			<input id="search-field" type="text" placeholder="Search"
+				th:value="${keyword}" name="keyword">
+			<button type="submit" class="btn btn-info">Search</button>
+			<button type="submit" class="btn btn-info">Reset</button>
+		</form>
+
+		<form>
+        	<button id="filter-btn" class="btn btn-info"><i class="fa fa-solid fa-filter"></i></button>
+        </form>
+        
+        <form action="">
+        	<button id="sort-btn" class="btn btn-info"><i class="fa fa-solid fa-sort"></i></button>
+        </form>
+    </section>
+	
+	
+		<section id="blog-post" th:each="post : ${postList}" >
+			<div id="same-line">
+				<p th:text="${post.author}"></p>
+				<p th:text="${#dates.format(post.createdAt, 'dd MMM')}"></p>			
+			</div>
+
+			<h3>
+				<a th:href="@{/post?id=${post.id}}" th:text="${post.title}"></a>
+			</h3>
+			<p th:text="${post.excerpt}"></p>
+
+			<div id="same-line">
+				<div class="tags" th:each="tag : ${tags}">
+					<p id="box" th:text="${tag.name}"></p>
+				</div>
+					<a th:href="@{/delete/{id}(id=${post.id})}" id="delete-btn" class="btn"><i class="fa fa-solid fa-trash"></i></a>
+			</div>
+		</section>
+
+</body>
+</html>

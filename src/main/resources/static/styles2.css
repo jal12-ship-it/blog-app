@@ -1,0 +1,35 @@
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+section{
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+    align-items: center;
+    
+}
+
+input {
+    margin: 30px;
+    padding: 10px;
+    width: 40%;
+    border: 1px solid red;
+}
+
+#title {
+    font-size: 30px;
+}
+
+#content {
+    font-size: 20px;
+    width: 40%;
+    border: 0px;
+}
+
+textarea {
+    resize: vertical;
+    border: 1px solid red;
+
+}   
