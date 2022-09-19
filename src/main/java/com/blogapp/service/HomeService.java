@@ -28,12 +28,16 @@ public class HomeService {
 		return postsRepository.findAll();
 	}
 	
-	public Optional<Posts> findById(Integer id) {
+	public Optional<Posts> getPostById(Integer id) {
 		return postsRepository.findById(id);
 	}
 	
 	public List<Posts> getByKeyword(String keyword){
 		return postsRepository.findByKeyword(keyword);
+	}
+	
+	public void createExcerpt(Integer id) {
+		postsRepository.createExcerpt(id);
 	}
 
 	public void savePosts(Posts post) {
@@ -47,5 +51,5 @@ public class HomeService {
 	public void deletePostsById(Integer id) {
 		postsRepository.deleteById(id);
 	}
-	
+
 }

@@ -1,6 +1,9 @@
 package com.blogapp.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,18 +31,19 @@ public class HomeController {
 	}
 	
 	@GetMapping
-	public String home2(Model model, String keyword) {
+	public String home2(Model model, String search) {
 		
 		List<Tags> tags = homeService.getAllTags();
 		
-		if(keyword!=null) {
-			List<Posts> list = homeService.getByKeyword(keyword);
+		if(search!=null) {
+			List<Posts> list = homeService.getByKeyword(search);
 			model.addAttribute("postList", list);
 		}else {
 			List<Posts> list = homeService.getAllPosts();
 			model.addAttribute("postList", list);}
 
 		model.addAttribute("tags", tags);
+		model.addAttribute("search", search);
 		return "home2";
 	}
 
@@ -54,9 +58,15 @@ public class HomeController {
 	}
 
 	@PostMapping("/newPost")
-	public String savePost(@ModelAttribute("post") Posts post, @ModelAttribute("tag") Tags tag) {
+	public String savePost(@ModelAttribute("post") Posts post, @ModelAttribute("tag") String tag) {
+		
+		ArrayList<Tags> tags = new ArrayList<Tags>(Arrays.asList(tag.split(", "));
+		
+		for (Tags tag : tags) {
+			post.getTags().add(tag);
+		}
 		homeService.savePosts(post);
-		homeService.saveTags(tag);
+		homeService.createExcerpt(post.getId());
 		return "redirect:/";
 	}
 	
@@ -64,5 +74,21 @@ public class HomeController {
 	public String deletePost(@PathVariable(value="id") Integer id) {
 		homeService.deletePostsById(id);	
 		return "redirect:/";
+	}
+	
+	@GetMapping("/showPost/{id}")
+	public String showPost(@PathVariable(value="id") Integer id, Model model) {
+		Optional<Posts> optional = homeService.getPostById(id);
+		Posts post = null;
+		if(optional.isPresent()) {
+			post = optional.get();
+		}
+		else {
+			throw new RuntimeException("Post not found with id::" + id);
+		}
+		
+		model.addAttribute("post", post);
+		
+		return "showPost";
 	}
 }

@@ -1,27 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http:/ /www.w3.org/1999/xhtml"
+	  	xmlns:th="http:/ /www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="styles3.css">
+    <link rel="stylesheet" href="/styles3.css">
     <script src="https://kit.fontawesome.com/e776bd7806.js" crossorigin="anonymous"></script>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title th:text="${post.title}"></title>
 </head>
 
 <body>
 
     <div>
-        Author Name
+        <p th:text="${post.author}"></p>
     </div>
 
     <article>
-        <h2>Title</h2>
-        <p>all the content Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sunt cupiditate omnis dignissimos, suscipit, necessitatibus reiciendis iure consequatur voluptatem saepe vero magni, nihil odit earum. Repudiandae delectus quae rerum ipsam?</p>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsum adipisci delectus quis voluptas earum, sed corrupti debitis odio maiores unde iusto quibusdam dignissimos quo aspernatur accusantium aliquid reprehenderit tenetur quod?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut consequatur aliquam qui, explicabo possimus dignissimos reiciendis dolorum iste mollitia, facilis dolores veniam voluptates praesentium voluptatum aspernatur iusto illum sit omnis.</p>
-    </article>
+        <h2 th:text="${post.title}"></h2>
+        <p th:text="${post.content}"></p>
+        </article>
 
     <hr/>
 

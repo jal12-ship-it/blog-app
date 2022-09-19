@@ -6,4 +6,6 @@ import com.blogapp.model.Tags;
 
 public interface TagsRepository extends JpaRepository<Tags, Integer> {
 
+	
+	
 }

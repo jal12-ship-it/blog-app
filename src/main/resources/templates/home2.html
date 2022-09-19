@@ -31,7 +31,7 @@
 
 		<form method="GET" th:action="@{/}">
 			<input id="search-field" type="text" placeholder="Search"
-				th:value="${keyword}" name="keyword">
+				th:value="${search}" th:name="search">
 			<button type="submit" class="btn btn-info">Search</button>
 			<button type="submit" class="btn btn-info">Reset</button>
 		</form>
@@ -53,12 +53,12 @@
 			</div>
 
 			<h3>
-				<a th:href="@{/post?id=${post.id}}" th:text="${post.title}"></a>
+				<a th:href="@{/showPost/{id}(id=${post.id})}" th:text="${post.title}"></a>
 			</h3>
 			<p th:text="${post.excerpt}"></p>
 
 			<div id="same-line">
-				<div class="tags" th:each="tag : ${tags}">
+				<div class="tags" th:each="tag : ${post.tags}">
 					<p id="box" th:text="${tag.name}"></p>
 				</div>
 					<a th:href="@{/delete/{id}(id=${post.id})}" id="delete-btn" class="btn"><i class="fa fa-solid fa-trash"></i></a>
