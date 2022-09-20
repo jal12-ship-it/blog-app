@@ -6,8 +6,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.blogapp.model.Comments;
 import com.blogapp.model.Posts;
 import com.blogapp.model.Tags;
+import com.blogapp.repository.CommentsRepository;
 import com.blogapp.repository.PostsRepository;
 import com.blogapp.repository.TagsRepository;
 
@@ -19,6 +21,9 @@ public class HomeService {
 	
 	@Autowired
 	private TagsRepository tagsRepository;
+
+	@Autowired
+	private CommentsRepository commentsRepository;
 	
 	public List<Tags> getAllTags() {
 		return tagsRepository.findAll();
@@ -50,6 +55,10 @@ public class HomeService {
 	
 	public void deletePostsById(Integer id) {
 		postsRepository.deleteById(id);
+	}
+
+	public List<Comments> getAllComments() {
+		return commentsRepository.findAll();
 	}
 
 }

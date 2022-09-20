@@ -44,7 +44,9 @@
         	<button id="sort-btn" class="btn btn-info"><i class="fa fa-solid fa-sort"></i></button>
         </form>
     </section>
-	
+		<section th:if="${postList.empty}">
+			<p>Post Unavailable</p>
+		</section>
 	
 		<section id="blog-post" th:each="post : ${postList}" >
 			<div id="same-line">

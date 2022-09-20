@@ -26,29 +26,21 @@
 
     <section>
         <h4>Comment</h4>
-        <form action="">
+        <form action="" th:object="${comment}">
             <label for="name">Name</label>
-            <input type="text">
+            <input type="text" th:field="*{name}">
 
             <label for="name">Email</label>
-            <input type="email">
+            <input type="email" th:field="*{email}">
 
             <label for="name">Comment</label>
-            <textarea name="" id="" cols="30" rows="10"></textarea>
+            <textarea name="" id="" cols="30" rows="10" th:field="*{comment}"></textarea>
 
             <button class="btn btn-info">Respond</button>
         </form>
-        <div id="comment-box">
-            <h4>Users_name</h4>
-            <p>His constructive critisism or destructive criticism goes here..</p>
-        </div>
-        <div id="comment-box">
-            <h4>Users_name</h4>
-            <p>His constructive critisism or destructive criticism goes here..</p>
-        </div>
-        <div id="comment-box">
-                <h4>Users_name</h4>
-            <p>His constructive critisism or destructive criticism goes here..</p>
+        <div id="comment-box" th:each="comment : ${commentList}">
+            <h4 th:text=${comment.name}></h4>
+            <p th:text=${comment.comment}></p>
         </div>
     </section>
 
