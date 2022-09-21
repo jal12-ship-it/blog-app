@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.blogapp.model.Comments;
@@ -53,6 +56,10 @@ public class HomeService {
 		tagsRepository.save(tag);
 	}
 	
+	public void saveComments(Comments comment) {
+		commentsRepository.save(comment);
+	}
+	
 	public void deletePostsById(Integer id) {
 		postsRepository.deleteById(id);
 	}
@@ -61,4 +68,11 @@ public class HomeService {
 		return commentsRepository.findAll();
 	}
 
+	public List<Posts> findPostsWithSorting(String field) {
+		return postsRepository.findAll(Sort.by(Sort.Direction.ASC, field));
+	}
+	
+	public Page<Posts> findPostsWithPagination(int offset) {
+		return postsRepository.findAll(PageRequest.of(offset, 10));
+	}
 }

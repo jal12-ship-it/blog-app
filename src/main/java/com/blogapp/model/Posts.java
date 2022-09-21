@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 
 @Entity
@@ -23,12 +24,14 @@ public class Posts {
 	private String excerpt;
 	private String content;
 	private String author;
-	private String publishedAt;
+	private Date publishedAt = new Date();
 	private Boolean isPublished;
 	private Date createdAt = new Date();
 	private Date updatedAt = new Date();
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Tags> tags = new ArrayList<>();
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
+	private List<Comments> comments = new ArrayList<>();
 	
 	public Integer getId() {
 		return id;
@@ -60,10 +63,10 @@ public class Posts {
 	public void setAuthor(String author) {
 		this.author = author;
 	}
-	public String getPublishedAt() {
+	public Date getPublishedAt() {
 		return publishedAt;
 	}
-	public void setPublishedAt(String publishedAt) {
+	public void setPublishedAt(Date publishedAt) {
 		this.publishedAt = publishedAt;
 	}
 	public Boolean getIsPublished() {
@@ -89,6 +92,12 @@ public class Posts {
 	}
 	public void setTags(List<Tags> tags) {
 		this.tags = tags;
+	}
+	public List<Comments> getComments() {
+		return comments;
+	}
+	public void setComments(List<Comments> comment) {
+		this.comments = comment;
 	}
 	
 	

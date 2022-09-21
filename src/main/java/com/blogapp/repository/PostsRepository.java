@@ -22,4 +22,5 @@ public interface PostsRepository extends JpaRepository<Posts, Integer> {
 	@Modifying(clearAutomatically=true)
 	@Query(value = "update posts p1 set p1.excerpt = left(p1.content, 100) where p1.id = :id", nativeQuery = true)
 	void createExcerpt(@Param("id") Integer id);
+	
 }

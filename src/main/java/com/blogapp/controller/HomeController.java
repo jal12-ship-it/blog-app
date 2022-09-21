@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,14 +26,9 @@ public class HomeController {
 	
 	@Autowired
 	private HomeService homeService;
-
-	@GetMapping("/home")
-	public String home() {
-		return "home";
-	}
 	
 	@GetMapping
-	public String home2(Model model, String search) {
+	public String home(Model model, String search) {
 		
 		List<Tags> tags = homeService.getAllTags();
 		
@@ -49,37 +45,75 @@ public class HomeController {
 		return "home2";
 	}
 
+	@GetMapping("/filter/{filterBy}")
+	public String filterBy(Model model, String filterType) {
+		return null;
+	}
 	
-	@GetMapping("/edit")
-	public String createPost(Model model) {
+	@GetMapping("/sort/{field}")
+	public String getAllPostsWithSort(@PathVariable String field, Model model) {
+		List<Posts> sortedList = homeService.findPostsWithSorting(field);
+		model.addAttribute("postList", sortedList);
 		
-		Posts post = new Posts();
-		Tags tag = new Tags();
+		return "home2";
+	}
+	
+	@GetMapping("/page/{offset}")
+	public String getAllPostsWithPageination(@PathVariable int offset, Model model) {
+		Page<Posts> page = homeService.findPostsWithPagination(offset);
+		model.addAttribute("postList", page);
+		return "home2";
+		
+	}
+	
+	@PostMapping("/savePost")
+	public String savePost(@ModelAttribute("post") Posts post, @ModelAttribute("tag") String tagString) {
+		
+		System.out.println(post.getTitle());
+		List<String> tagList = new ArrayList<>(Arrays.asList(tagString.split(" ")));
+		List<Tags> tagObjectList = new ArrayList<>();
+		
+		for (String eachTag : tagList) {
+			Tags tag = new Tags();
+			tag.setName(eachTag);
+			tagObjectList.add(tag);
+		}
+		
+		post.setTags(tagObjectList);
+		post.setIsPublished(true);
+		
+		homeService.savePosts(post);
+		homeService.createExcerpt(post.getId());
+		
+		return "redirect:/";
+	}
+	
+	@GetMapping("/newpost")
+	public String createPost(Model model, Posts post, String tag) {
 		
 		model.addAttribute("post", post);
 		model.addAttribute("tag", tag);
 		
 		return "newPost";
 	}
-
-	@PostMapping("/newPost")
-	public String savePost(@ModelAttribute("post") Posts post, @ModelAttribute("tag") String tagString, Tags tag) {
+	
+	@GetMapping("/showPost/{id}")
+	public String showPost(@PathVariable(value="id") Integer id, Model model, Comments comments, Posts post) {
+		Optional<Posts> optional = homeService.getPostById(id);
 		
-		List<String> tagList = new ArrayList<>(Arrays.asList(tagString.split(", ")));
-		List<Tags> tagObjectList = new ArrayList<>();
-		
-		for (String eachTag : tagList) {
-			Tags tag1 = new Tags();
-			tag1.setName(eachTag);
-			tagObjectList.add(tag1);
+		if(optional.isPresent()) {
+			post = optional.get();
+		}
+		else {
+			throw new RuntimeException("Post not found with id::" + id);
 		}
 		
-		post.setTags(tagObjectList);
+		System.out.println(post.getId());
 		
-		homeService.savePosts(post);
-		homeService.createExcerpt(post.getId());
+		model.addAttribute("comments", comments);
+		model.addAttribute("post", post);
 		
-		return "redirect:/";
+		return "showPost";
 	}
 	
 	@GetMapping("/delete/{id}")
@@ -89,23 +123,23 @@ public class HomeController {
 		return "redirect:/";
 	}
 	
-	@GetMapping("/showPost/{id}")
-	public String showPost(@PathVariable(value="id") Integer id, Model model, Comments comments) {
+	@PostMapping("/saveComment")
+	public String saveComment(@ModelAttribute("comment") Comments comments, @ModelAttribute("postId") Integer id, Posts post) {
+//		String com = comment.getComment();
 		Optional<Posts> optional = homeService.getPostById(id);
-		Posts post = null;
-		
 		if(optional.isPresent()) {
 			post = optional.get();
 		}
 		else {
 			throw new RuntimeException("Post not found with id::" + id);
 		}
+		comments.setPost(post);
+		post.getComments().add(comments);
+		homeService.saveComments(comments);
+
 		
-		List<Comments> list = homeService.getAllComments();
-		
-		model.addAttribute("post", post);
-		model.addAttribute("commentList", list);
-		
-		return "showPost";
+		return "redirect:/showPost/" + post.getId();
 	}
+	
+
 }

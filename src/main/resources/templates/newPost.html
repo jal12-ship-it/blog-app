@@ -11,7 +11,7 @@
 </head>
 
 <body>
-	<form method="POST" th:action="@{/newPost}" th:object="${post}">
+	<form method="POST" th:action="@{/savePost}" th:object="${post}">
 
 		<section>
 			<input id="title" type="text" placeholder="Title" th:field="*{title}">
@@ -31,7 +31,7 @@
 				th:field="*{author}">
 		</section>
 		
-		<button>Upload</button>
+		<button>Publish</button>
 		
 	</form>
 

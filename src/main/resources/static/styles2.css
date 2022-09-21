@@ -1,7 +1,7 @@
 body {
     display: flex;
     flex-direction: column;
-}
+    }
 
 section{
     display: flex;
@@ -15,7 +15,7 @@ input {
     margin: 30px;
     padding: 10px;
     width: 40%;
-    border: 1px solid red;
+    border: 1px solid grey;
 }
 
 #title {
@@ -25,11 +25,10 @@ input {
 #content {
     font-size: 20px;
     width: 40%;
-    border: 0px;
 }
 
 textarea {
     resize: vertical;
-    border: 1px solid red;
+    border: 1px solid grey;
 
 }   
