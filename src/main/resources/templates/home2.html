@@ -3,7 +3,8 @@
 	  	xmlns:th="http:/ /www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" th:href="@{/styles.css}" />
+<link rel="stylesheet" th:href="@{/styles.css}" />	
+
 <script src="https://kit.fontawesome.com/e776bd7806.js"
 	crossorigin="anonymous"></script>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,8 +15,7 @@
 
 <body>
 	<header>
-		
-		<a th:if="${session.empty}" th:href="/login">Login</a>
+		<a th:href="@{/login}">Login</a>
 	</header>
     <section id="search-bar">
         	<a th:href="@{/newpost}" id="edit-btn" class="btn"><i class="fa-solid fa-pen-to-square"></i></a>
@@ -29,10 +29,14 @@
         	<button id="filter-btn" class="btn"><i class="fa fa-solid fa-filter"></i></button>
         </form>
         
-        <form action="">
-        	<button id="sort-btn" class="btn"><i class="fa fa-solid fa-sort"></i></button>
+        <form method="get" th:action="@{/sort}">
+			<input type="hidden" th:value="publishedAt" th:name="sortField">
+        	<input type="hidden" th:value="${order}=='asc' ? 'dsc' : 'asc'" th:name="order">
+        	<button id="sort-btn" class="btn" ><i class="fa fa-solid fa-sort"></i></button>
         </form>
+        	
     </section>
+		
 		<section th:if="${postList.empty}">
 			<p class="center">Post Unavailable</p>
 		</section>
@@ -49,12 +53,21 @@
 			<p th:text="${post.excerpt}"></p>
 
 			<div id="same-line">
-				<div class="tags" th:each="tag : ${post.tags}">
-					<p id="box" th:text="${tag.name}"></p>
+				<div class="tags">
+					<p th:each="tag : ${post.tags}" id="box" th:text="${tag.name}"></p>
 				</div>
-					<a th:href="@{/delete/{id}(id=${post.id})}" id="delete-btn" class="btn"><i class="fa fa-solid fa-trash"></i></a>
+				<a th:href="@{/delete/{id}(id=${post.id})}" id="delete-btn" class="btn"><i class="fa fa-solid fa-trash"></i></a>
 			</div>
 		</section>
+
+	<nav aria-label="Page navigation example">
+		<ul class="pagination">
+			<li th:if="${currentPage != 0}" class="page-item"><a th:href="@{'/?start='+${currentPage*10 - 9}+'&limit=10'}" class="page-link" href="">Previous</a></li>
+			<li class="page-item"><a th:href="@{'/?start='+${(currentPage+1)*10 + 1}+'&limit=10'}" class="page-link" href="#">Next</a></li>
+		</ul>
+	</nav>
+
+
 
 </body>
 </html>
