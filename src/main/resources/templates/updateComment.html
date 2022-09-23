@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http:/ /www.w3.org/1999/xhtml"
+	  	xmlns:th="http:/ /www.thymeleaf.org">
+<head>
+<link rel="stylesheet" href="/styles3.css">
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	
+	        <form method="post" th:action="@{/saveComment}" th:object="${comment}">
+            <label for="name">Name</label>
+            <input type="text" th:name="name" th:field="*{name}">
+            
+            <input type="hidden" th:name="postId" th:value="${comment.post.id}">
+            <input type="hidden" th:field="*{id}">
+
+            <label for="name">Email</label>
+            <input type="email" th:name="email" th:field="*{email}">
+
+            <label for="name">Comment</label>
+            <textarea  id="cBox" cols="30" rows="10" th:name="message" th:field="*{message}"></textarea>
+				
+            <button class="btn">Update</button>
+        </form>
+</body>
+</html>
