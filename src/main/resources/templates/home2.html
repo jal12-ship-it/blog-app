@@ -22,15 +22,14 @@
 	</header>
 
 	<section id="filter">
+	<form action="" th:action="@{/}">
 		<h3>Filter By :</h3>
 		<div class="container">
 			<div id="category">
 				<b>Author</b>
 			</div>
 			<div id="small" th:each="author : ${authorList}">
-				<label id="parent" for="${author}" th:text="${author}"> 
-					<input class="child" type="checkbox" th:name="${author}" th:value="${author}"> 
-				</label>
+			<input class="child" type="checkbox" th:value="${authorStat.index}" th:text="${author}" name="authorId">
 			</div>
 		</div>
 
@@ -38,8 +37,8 @@
 			<div id="category">
 				<b>Published Date & Time</b>
 			</div>
-			<input type="date" name="jalena" value=""> 
-			<input type="time" name="jalena" value="">
+			<input id="input-box" type="date" name="publishedDate">
+			<input id="input-box" type="time" name="publishedTime">
 		</div>
 
 		<div class="container">
@@ -47,11 +46,13 @@
 				<b>Tags</b>
 			</div>
 			<div id="small" th:each="tag : ${tagList}">
-				<label id="parent" for="${tag}" th:text="${tag}"> 
-				<input class="child" type="checkbox" name="${tag}" value="${tag}">
-				</label>
+				<input class="child" type="checkbox" name="tagId" th:value="${tagStat.index}" th:text="${tag}">
 			</div>
 		</div>
+		
+		<input type="submit" value="Apply">
+		
+		</form>
 	</section>
 
 	<main>
@@ -71,9 +72,9 @@
 				</button>
 			</form>
 
-			<form method="get" th:action="@{/sort}">
+			<form method="get" th:action="@{/}">
 				<input type="hidden" th:value="publishedAt" th:name="sortField">
-				<input type="hidden" th:value="${order}=='asc' ? 'dsc' : 'asc'"
+				<input type="hidden" th:value="order=='asc' ? 'asc' : 'dsc'"
 					th:name="order">
 				<button id="sort-btn" class="btn">
 					<i class="fa fa-solid fa-sort"></i>
@@ -110,10 +111,10 @@
 		<nav aria-label="Page navigation example">
 			<ul class="pagination">
 				<li th:if="${currentPage != 0}" class="page-item"><a
-					th:href="@{'/?start='+${currentPage*10 - 9}+'&limit=10'}"
+					th:href="@{'/?start='+${currentPage*limit-limit+1} +'&limit='+${limit}}"
 					class="page-link" href="">Previous</a></li>
 				<li class="page-item"><a
-					th:href="@{'/?start='+${(currentPage+1)*10 + 1}+'&limit=10'}"
+					th:href="@{'/?start='+${(currentPage+1)*limit + 1}+'&limit='+${limit}}"
 					class="page-link" href="#">Next</a></li>
 			</ul>
 		</nav>

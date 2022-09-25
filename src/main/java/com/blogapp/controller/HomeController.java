@@ -1,145 +1,100 @@
 package com.blogapp.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.blogapp.model.Comments;
 import com.blogapp.model.Posts;
-import com.blogapp.model.Tags;
 import com.blogapp.service.HomeService;
+import com.blogapp.service.PostService;
 
 @Controller
 @RequestMapping("/")
 public class HomeController {
 	
+	private static final boolean String = false;
 	@Autowired
 	private HomeService homeService;
+	@Autowired
+	private PostService postService;
+	
+	@ModelAttribute
+	public void addFilterLists(Model model) {
+		List<String> authorList = postService.getAuthorList();
+		List<String> tagList = postService.getAllTags();
+		
+		model.addAttribute("authorList", authorList);
+		model.addAttribute("tagList", tagList);
+	}
 	
 	@GetMapping
-	public String home(Model model, String search) {
+	public String home(Model model, String search, String[] authorId, @ModelAttribute("authorList") String[] authorList, @ModelAttribute("tagList") String[] tagList,
+									String[] tagId, String sortField, @RequestParam(defaultValue= "1") Integer start,
+																	  @RequestParam(defaultValue= "10") Integer limit,
+												   					  @RequestParam(defaultValue = "asc") String order) {
 		
-		List<Tags> tags = homeService.getAllTags();
+		List<Posts> list = null;
+		Page<Posts> page = null;
+		List<Integer> PostIds = null;
+		Boolean isPublished = true;
+		Pageable pageable = PageRequest.of(start/limit, limit);
 		
 		if(search!=null) {
-			List<Posts> list = homeService.getByKeyword(search);
-			model.addAttribute("postList", list);
-		}else {
-			List<Posts> list = homeService.getAllPosts();
-			model.addAttribute("postList", list);}
-
-		model.addAttribute("tags", tags);
-		model.addAttribute("search", search);
+			page = homeService.getByKeyword(pageable, search);
+		}
+		else if(authorId != null || tagId != null) {
+			List<String> authorName = new ArrayList<>();
+			List<String> tagName = new ArrayList<>();
+			for (String id : authorId) {
+				String name = authorList[Integer.parseInt(id)];
+				authorName.add(name);
+			}			
+			for (String id : tagId) {
+				String name = tagList[Integer.parseInt(id)];
+				tagName.add(name);
+		}
 		
-		return "home2";
-	}
+			page = postService.getAllPostsByAuthor(authorName, tagName, pageable);
+			
+//			for (String id : authorId) {
+//				String name = authorList[Integer.parseInt(id)];
+//				page.and(postService.getPostsByAuthor(name, pageable));
+//			}
+//		
 
-	@GetMapping("/filter/{filterBy}")
-	public String filterBy(Model model, String filterType) {
-		return null;
-	}
-	
-	@GetMapping("/sort/{field}")
-	public String getAllPostsWithSort(@PathVariable String field, Model model) {
-		List<Posts> sortedList = homeService.findPostsWithSorting(field);
-		model.addAttribute("postList", sortedList);
+		}
+		else if(sortField != null) {
+			if(order.equals("asc")) {
+				pageable = PageRequest.of(start/limit, limit, Sort.by(sortField).ascending());
+			} else {
+				pageable = PageRequest.of(start/limit, limit, Sort.by(sortField).descending());
+			}
+			page = postService.getAllPosts(pageable);
+		}
+		else {
+			page = postService.getAllPosts(pageable);
+		}
 		
-		return "home2";
-	}
-	
-	@GetMapping("/page/{offset}")
-	public String getAllPostsWithPageination(@PathVariable int offset, Model model) {
-		Page<Posts> page = homeService.findPostsWithPagination(offset);
 		model.addAttribute("postList", page);
+		model.addAttribute("currentPage", start/limit);
+		model.addAttribute("limit", limit);
+		model.addAttribute("search", search);
+
+		
+		
 		return "home2";
-		
 	}
-	
-	@PostMapping("/savePost")
-	public String savePost(@ModelAttribute("post") Posts post, @ModelAttribute("tag") String tagString) {
-		
-		System.out.println(post.getTitle());
-		List<String> tagList = new ArrayList<>(Arrays.asList(tagString.split(" ")));
-		List<Tags> tagObjectList = new ArrayList<>();
-		
-		for (String eachTag : tagList) {
-			Tags tag = new Tags();
-			tag.setName(eachTag);
-			tagObjectList.add(tag);
-		}
-		
-		post.setTags(tagObjectList);
-		post.setIsPublished(true);
-		
-		homeService.savePosts(post);
-		homeService.createExcerpt(post.getId());
-		
-		return "redirect:/";
-	}
-	
-	@GetMapping("/newpost")
-	public String createPost(Model model, Posts post, String tag) {
-		
-		model.addAttribute("post", post);
-		model.addAttribute("tag", tag);
-		
-		return "newPost";
-	}
-	
-	@GetMapping("/showPost/{id}")
-	public String showPost(@PathVariable(value="id") Integer id, Model model, Comments comments, Posts post) {
-		Optional<Posts> optional = homeService.getPostById(id);
-		
-		if(optional.isPresent()) {
-			post = optional.get();
-		}
-		else {
-			throw new RuntimeException("Post not found with id::" + id);
-		}
-		
-		System.out.println(post.getId());
-		
-		model.addAttribute("comments", comments);
-		model.addAttribute("post", post);
-		
-		return "showPost";
-	}
-	
-	@GetMapping("/delete/{id}")
-	public String deletePost(@PathVariable(value="id") Integer id) {
-		
-		homeService.deletePostsById(id);	
-		return "redirect:/";
-	}
-	
-	@PostMapping("/saveComment")
-	public String saveComment(@ModelAttribute("comment") Comments comments, @ModelAttribute("postId") Integer id, Posts post) {
-//		String com = comment.getComment();
-		Optional<Posts> optional = homeService.getPostById(id);
-		if(optional.isPresent()) {
-			post = optional.get();
-		}
-		else {
-			throw new RuntimeException("Post not found with id::" + id);
-		}
-		comments.setPost(post);
-		post.getComments().add(comments);
-		homeService.saveComments(comments);
 
-		
-		return "redirect:/showPost/" + post.getId();
-	}
 	
-
 }

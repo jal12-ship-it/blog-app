@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,13 +16,14 @@ import javax.persistence.OneToMany;
 
 
 @Entity
-public class Posts {
+public class Posts  {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String title;
 	private String excerpt;
+	@Column(length=1000)
 	private String content;
 	private String author;
 	private Date publishedAt = new Date();

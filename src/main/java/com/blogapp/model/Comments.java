@@ -3,6 +3,7 @@ package com.blogapp.model;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,6 +19,7 @@ public class Comments {
 	private Integer id;
 	private String name;
 	private String email;
+	@Column(length=50000)
 	private String message;
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Posts post;
