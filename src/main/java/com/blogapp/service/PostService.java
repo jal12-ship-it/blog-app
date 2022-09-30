@@ -4,58 +4,50 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.blogapp.model.Posts;
-import com.blogapp.repository.PostsRepository;
-import com.blogapp.repository.TagsRepository;
+import com.blogapp.model.Post;
+import com.blogapp.repository.PostRepository;
 
 @Service
 public class PostService {
 	
 	@Autowired
-	private PostsRepository postsRepository;
-	@Autowired
-	private TagsRepository tagsRepository;
+	private PostRepository postRepository;
 
-	public void savePosts(Posts post) {
-		postsRepository.save(post);
+	public void savePosts(Post post) {
+		postRepository.save(post);
 	}
 
-	public Page<Posts> getAllPosts(Example<Posts> isPublished, Pageable pageable) {
-		return postsRepository.findAll(isPublished, pageable);
-	}
-	
-	public Page<Posts> getAllPosts(Pageable pageable) {
-		return postsRepository.findAll(pageable);
+	public Page<Post> getPosts(Boolean isPublished, Pageable pageable) {
+		return postRepository.findByIsPublished(isPublished, pageable);
 	}
 
-	public Optional<Posts> getPostById(Integer id) {
-		return postsRepository.findById(id);
+	public Optional<Post> getPostById(Integer id) {
+		return postRepository.findById(id);
 	}
 
 	public void deletePostsById(Integer id) {
-		postsRepository.deleteById(id);
+		postRepository.deleteById(id);
 	}
 
 	public List<String> getAuthorList() {
-		return postsRepository.findDistictAuthor();
+		return postRepository.findDistinctAuthor();
 	}
 
-	public List<String> getAllTags() {
-		return tagsRepository.findAllTags();
+	public Page<Post> getPostsByAuthorAndTag(List<String> authorName, List<String> tagName, Pageable pageable) {
+		return postRepository.findDistinctByAuthorInAndTag_NameIn(authorName, tagName, pageable);
 	}
 
-	public List<Posts> getPostByTag(String name, Pageable pageable) {
-		return tagsRepository.findByName(name, pageable);
+	public Page<Post> search(Pageable pageable, String search){
+		return postRepository.findByKeyword(search, pageable);
 	}
 
-	public Page<Posts> getAllPostsByAuthor(List<String> authorName, List<String> tagName, Pageable pageable) {
-		return postsRepository.findByAuthor(authorName, tagName, pageable);
+	public void createExcerpt(Integer id) {
+		postRepository.createExcerpt(id);
 	}
-
 
 }

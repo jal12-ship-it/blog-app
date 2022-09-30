@@ -101,7 +101,7 @@
 
 			<div id="same-line">
 				<div class="tags">
-					<p th:each="tag : ${post.tags}" id="box" th:text="${tag.name}"></p>
+					<p th:each="tag : ${post.tag}" id="box" th:text="${tag.name}"></p>
 				</div>
 				<a th:href="@{/delete/{id}(id=${post.id})}" id="delete-btn"
 					class="btn"><i class="fa fa-solid fa-trash"></i></a>
@@ -111,10 +111,10 @@
 		<nav aria-label="Page navigation example">
 			<ul class="pagination">
 				<li th:if="${currentPage != 0}" class="page-item"><a
-					th:href="@{'/?start='+${currentPage*limit-limit+1} +'&limit='+${limit}}"
+					th:href="@{'/?page='+${currentPage-1} +'&pageSize='+${pageSIze}}"
 					class="page-link" href="">Previous</a></li>
 				<li class="page-item"><a
-					th:href="@{'/?start='+${(currentPage+1)*limit + 1}+'&limit='+${limit}}"
+					th:href="@{'/?page='+${currentPage+1}+'&pageSize='+${pageSize}}"
 					class="page-link" href="#">Next</a></li>
 			</ul>
 		</nav>

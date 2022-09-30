@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http:/ /www.w3.org/1999/xhtml"
-	  	xmlns:th="http:/ /www.thymeleaf.org">
+	  	xmlns:th="http:/ /www.thymeleaf.org"
+	  	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"	>
 
 <head>
     <meta charset="UTF-8">
@@ -23,12 +24,12 @@
         </article>
 
             <a th:href="@{/updatePost/{id}(id=${post.id})}" id="edit-btn" class="btn">Update</a>
-            <a th:href="@{/deletePost/{id}(id=${post.id})}" id="edit-btn" class="btn">Delete</a>
+            <a th:href="@{/delete/{id}(id=${post.id})}" id="edit-btn" class="btn">Delete</a>
     <hr/>
 
     <section>
         <h4>Comment</h4>
-        <form method="post" th:action="@{/saveComment}" th:object="${comments}">
+        <form method="post" th:action="@{/comment/saveComment}" th:object="${comments}">
             <label for="name">Name</label>
             <input type="text" th:field="*{name}">
 
@@ -45,8 +46,9 @@
         <div id="comment-box" th:each="comment : ${post.comments}">
             <h4 th:text=${comment.name}></h4>
             <p th:text=${comment.message}></p>
-            <a th:href="@{/updateComment/{id}(id=${comment.id})}" id="edit-btn" class="btn">Update</a>
-            <a th:href="@{/deleteComment/{id}(id=${comment.id})}" id="edit-btn" class="btn">Delete</a>
+            <div sec:authorize="isAuthenticated()" ></div>
+            <a th:href="@{/comment/updateComment/{id}(id=${comment.id})}" id="edit-btn" class="btn">Update</a>
+            <a th:href="@{/comment/delete/{id}(id=${comment.id})}" id="edit-btn" class="btn">Delete</a>
         </div>
     </section>
 

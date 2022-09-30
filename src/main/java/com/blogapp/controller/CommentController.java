@@ -2,6 +2,7 @@ package com.blogapp.controller;
 
 import java.util.Optional;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,8 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.blogapp.model.Comments;
-import com.blogapp.model.Posts;
+import com.blogapp.model.Comment;
+import com.blogapp.model.Post;
 import com.blogapp.service.CommentService;
 import com.blogapp.service.PostService;
 
@@ -26,40 +27,37 @@ public class CommentController {
 	private PostService postService;
 
 	@GetMapping("/updateComment/{id}")
-	public String updateComment(@PathVariable(value="id") Integer id, Model model, Comments comment) {
-		Optional<Comments> optional =  commentService.getCommentById(id);
+	public String updateComment(@PathVariable(value="id") Integer id, Model model) {
+		Optional<Comment> optional =  commentService.getCommentById(id);
 		
 		if(optional.isPresent()) {
-			comment = optional.get();
+			model.addAttribute("comment", optional.get());
 		}
 		else {
 			throw new RuntimeException("Post not found with id::" + id);
 		}
-		System.out.println(comment.getMessage());
-		model.addAttribute("comment", comment);
 		
 		return "updateComment";
 	}
 	
 	@PostMapping("/saveComment")
-	public String saveComment(@ModelAttribute("comment") Comments comments, @ModelAttribute("postId") Integer id, Posts post) {
-		Optional<Posts> optional = postService.getPostById(id);
+	public String saveComment(@ModelAttribute("comment") Comment comment, @ModelAttribute("postId") Integer id) {
+		Optional<Post> optional = postService.getPostById(id);
 		if(optional.isPresent()) {
-			post = optional.get();
+			comment.setPost(optional.get());
 		}
 		else {
 			throw new RuntimeException("Post not found with id::" + id);
 		}
 		
-		comments.setPost(post);
-		commentService.saveComments(comments);
+		commentService.saveComment(comment);
 		
-		return "redirect:/showPost/" + post.getId();
+		return "redirect:/showPost/" + id;
 	}
 	
 	@GetMapping("/delete/{id}")
 	public String deleteComment(@PathVariable(value="id") Integer id) {
-		
+
 		commentService.deleteCommentById(id);	
 		return "redirect:/";
 	}

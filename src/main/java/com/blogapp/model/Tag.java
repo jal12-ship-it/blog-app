@@ -13,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
 @Entity
-public class Tags {
+public class Tag {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,9 +21,8 @@ public class Tags {
 	private String name;
 	private Date createdAt = new Date();
 	private Date updatedAt = new Date();
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "tags")
-	private List<Posts> posts = new ArrayList<>();
-	
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "tag")
+	private List<Post> post = new ArrayList<>();
 	public Integer getId() {
 		return id;
 	}
@@ -48,13 +47,13 @@ public class Tags {
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-	public List<Posts> getPosts() {
-		return posts;
+	public List<Post> getPost() {
+		return post;
 	}
-	public void setPosts(List<Posts> posts) {
-		this.posts = posts;
+	public void setPost(List<Post> post) {
+		this.post = post;
 	}
 	
 	
-	
+
 }

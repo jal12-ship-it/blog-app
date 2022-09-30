@@ -13,58 +13,76 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.blogapp.model.Comments;
-import com.blogapp.model.Posts;
-import com.blogapp.model.Tags;
-import com.blogapp.service.HomeService;
+import com.blogapp.model.Comment;
+import com.blogapp.model.Post;
+import com.blogapp.model.Tag;
 import com.blogapp.service.PostService;
+import com.blogapp.service.TagService;
 
 @Controller
 public class PostController {
 
 	@Autowired
-	private HomeService homeService;
+	private TagService tagService;
 	@Autowired
 	private PostService postService;
 	
 	@PostMapping("/savePost")
-	public String savePost(@ModelAttribute("post") Posts post, String tagString, Boolean publishType) {
-		
+	public String savePost(@ModelAttribute("post") Post post, String tagString) {
 		List<String> tagList = new ArrayList<>(Arrays.asList(tagString.split(" ")));
 		
 		for (String eachTag : tagList) {
-			Tags tag = new Tags();
-			if(postService.getAllTags().contains(eachTag)) {
-//				tag = postService.getTagByName(eachTag);
-				post.getTags().add(tag);
+			Tag tag = new Tag();
+			if(tagService.getTags().contains(eachTag)) {
+				post.getTag().add(tag);
 			} else {	
 			tag.setName(eachTag);
-			post.getTags().add(tag);
+			post.getTag().add(tag);
 			}
 		}
 		
-		post.setIsPublished(publishType);
-		post.setPublishedAt(new Date());
-		post.setUpdatedAt(new Date());
+		
+		if (post.getIsPublished() == true) {
+			post.setUpdatedAt(new Date());
+		} else {
+			post.setPublishedAt(new Date());
+		}
 		
 		postService.savePosts(post);
-		homeService.createExcerpt(post.getId());
+		postService.createExcerpt(post.getId());
 		
 		return "redirect:/";
 	}
 	
 
 	@GetMapping("/newpost")
-	public String createPost(Model model, Posts post) {
+	public String createPost(Model model, Post post) {
 		model.addAttribute("post", post);
+		
 		return "newPost";
 	}
 	
 	@GetMapping("/showPost/{id}")
-	public String showPost(@PathVariable(value="id") Integer id, Model model, Comments comments, Posts post) {
-		Optional<Posts> optional = postService.getPostById(id);
+	public String showPost(@PathVariable(value="id") Integer id, Model model) {
+		Optional<Post> optional = postService.getPostById(id);
+		
+		if(optional.isPresent()) {
+			model.addAttribute("post", optional.get());
+		}
+		else {
+			throw new RuntimeException("Post not found with id::" + id);
+		}
+		
+		model.addAttribute("comments", new Comment());
+		
+		return "showPost";
+	}
+	
+	@GetMapping("/updatePost/{id}")
+	public String updatePost(@PathVariable(value="id") Integer id, Model model, Post post) {
+		Optional<Post> optional =  postService.getPostById(id);
+		String tagName = "";
 		
 		if(optional.isPresent()) {
 			post = optional.get();
@@ -73,16 +91,22 @@ public class PostController {
 			throw new RuntimeException("Post not found with id::" + id);
 		}
 		
-		model.addAttribute("comments", comments);
-		model.addAttribute("post", post);
+		for (Tag tag : post.getTag()) {
+			tagName += tag.getName() + " ";
+		}
 		
-		return "showPost";
+		System.out.println(tagName);
+		
+		model.addAttribute("post", post);
+		model.addAttribute("tagName", tagName);
+		
+		return "newPost";
 	}
 	
 	@GetMapping("/delete/{id}")
 	public String deletePost(@PathVariable(value="id") Integer id) {
-		
 		postService.deletePostsById(id);	
+
 		return "redirect:/";
 	}
 	

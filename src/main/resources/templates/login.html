@@ -13,7 +13,7 @@
 
 <body>
 
-<!-- 	<header id="header">
+	<!-- 	<header id="header">
 		<div>
 			<nav id="nav-bar">
 				<h1>blog.com</h1>
@@ -21,15 +21,19 @@
 			</nav>
 		</div>
 
-	</header> -->
+	</header>-->
+	<div th:if="${error}">Unable to login. Check your email and
+		password.</div>
 
-    <h1>Login</h1>
-    <input type="email" placeholder="Email">
-    <input type="password" placeholder="Password">
-    <input id="btn" type="submit" value="Submit">
-
-    <p>Don't have an account? <a th:href="@{/register}">Create one</a></p>
-        
+		<h1>Login</h1>
+		<input type="email" name="email" placeholder="Email"> 
+		<input type="password" name="password" placeholder="Password"> 
+		<form action="" th:action="@{/login}">
+		<input id="btn" type="submit" value="Submit">
+		</form>
+		<p>
+			Don't have an account? <a th:href="@{/register}">Create one</a>
+		</p>
 
 </body>
 

@@ -8,7 +8,7 @@
 </head>
 <body>
 	
-	        <form method="post" th:action="@{/saveComment}" th:object="${comment}">
+	        <form method="post" th:action="@{/comment/saveComment}" th:object="${comment}">
             <label for="name">Name</label>
             <input type="text" th:name="name" th:field="*{name}">
             

@@ -11,6 +11,18 @@ section{
     
 }
 
+.btn {
+    padding-right: 10px;
+    margin-left: 5px;
+    background-color: rgba(223, 223, 223, 0.356);
+    border: none;
+    border-radius: 30px;
+    color: rgb(0, 0, 0);
+    padding: 12px 16px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
 input {
     margin: 30px;
     padding: 10px;

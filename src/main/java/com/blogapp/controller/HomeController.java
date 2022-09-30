@@ -1,6 +1,7 @@
 package com.blogapp.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,86 +16,77 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.blogapp.model.Posts;
-import com.blogapp.service.HomeService;
+import com.blogapp.model.Post;
 import com.blogapp.service.PostService;
+import com.blogapp.service.TagService;
 
 @Controller
 @RequestMapping("/")
 public class HomeController {
 	
-	private static final boolean String = false;
 	@Autowired
-	private HomeService homeService;
+	private TagService tagService;
 	@Autowired
 	private PostService postService;
 	
 	@ModelAttribute
 	public void addFilterLists(Model model) {
 		List<String> authorList = postService.getAuthorList();
-		List<String> tagList = postService.getAllTags();
+		List<String> tagList = tagService.getTags();
 		
 		model.addAttribute("authorList", authorList);
 		model.addAttribute("tagList", tagList);
 	}
 	
 	@GetMapping
-	public String home(Model model, String search, String[] authorId, @ModelAttribute("authorList") String[] authorList, @ModelAttribute("tagList") String[] tagList,
-									String[] tagId, String sortField, @RequestParam(defaultValue= "1") Integer start,
-																	  @RequestParam(defaultValue= "10") Integer limit,
+	public String home(Model model, String search, String[] authorId, @ModelAttribute("authorList") String[] authorList,
+									String[] tagId, String sortField, @ModelAttribute("tagList") String[] tagList,
+																	  @RequestParam(defaultValue= "0") Integer page,
+																	  @RequestParam(defaultValue= "10") Integer pageSize,
 												   					  @RequestParam(defaultValue = "asc") String order) {
 		
-		List<Posts> list = null;
-		Page<Posts> page = null;
-		List<Integer> PostIds = null;
 		Boolean isPublished = true;
-		Pageable pageable = PageRequest.of(start/limit, limit);
+		Page<Post> pages;
 		
+		Pageable pageable = PageRequest.of(page, pageSize);
+
 		if(search!=null) {
-			page = homeService.getByKeyword(pageable, search);
+			pages = postService.search(pageable, search);
 		}
 		else if(authorId != null || tagId != null) {
-			List<String> authorName = new ArrayList<>();
-			List<String> tagName = new ArrayList<>();
-			for (String id : authorId) {
-				String name = authorList[Integer.parseInt(id)];
-				authorName.add(name);
-			}			
-			for (String id : tagId) {
-				String name = tagList[Integer.parseInt(id)];
-				tagName.add(name);
-		}
-		
-			page = postService.getAllPostsByAuthor(authorName, tagName, pageable);
-			
-//			for (String id : authorId) {
-//				String name = authorList[Integer.parseInt(id)];
-//				page.and(postService.getPostsByAuthor(name, pageable));
-//			}
-//		
+			List<String> authorName = authorId == null ? Arrays.asList(authorList) : new ArrayList<>();
+			List<String> tagName = tagId == null ? Arrays.asList(tagList) : new ArrayList<>();
 
-		}
-		else if(sortField != null) {
-			if(order.equals("asc")) {
-				pageable = PageRequest.of(start/limit, limit, Sort.by(sortField).ascending());
-			} else {
-				pageable = PageRequest.of(start/limit, limit, Sort.by(sortField).descending());
+			if(authorId != null) {
+				Arrays.stream(authorId)
+						.map(id -> authorList[Integer.parseInt(id)])
+						.forEach(authorName::add);
 			}
-			page = postService.getAllPosts(pageable);
+			if(tagId != null) {
+				Arrays.stream(tagId)
+						.map(id -> tagList[Integer.parseInt(id)])
+						.forEach(tagName::add);
+			}
+
+			pages = postService.getPostsByAuthorAndTag(authorName, tagName, pageable);
 		}
 		else {
-			page = postService.getAllPosts(pageable);
+			if(sortField != null) {
+				if(order.equals("asc")) {
+					pageable = PageRequest.of(page, pageSize, Sort.by(sortField).ascending());
+				} else {
+					pageable = PageRequest.of(page, pageSize, Sort.by(sortField).descending());
+				}
+
+			}
+			pages = postService.getPosts(isPublished, pageable);
 		}
-		
-		model.addAttribute("postList", page);
-		model.addAttribute("currentPage", start/limit);
-		model.addAttribute("limit", limit);
+
+		model.addAttribute("postList", pages);
+		model.addAttribute("currentPage", page);
+		model.addAttribute("pageSize", pageSize);
 		model.addAttribute("search", search);
 
-		
-		
 		return "home2";
 	}
-
-	
 }

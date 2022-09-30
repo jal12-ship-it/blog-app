@@ -14,9 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
-
 @Entity
-public class Posts  {
+public class Post  {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,13 +26,14 @@ public class Posts  {
 	private String content;
 	private String author;
 	private Date publishedAt = new Date();
+	@Column(columnDefinition = "boolean default false")
 	private Boolean isPublished;
 	private Date createdAt = new Date();
 	private Date updatedAt = new Date();
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Tags> tags = new ArrayList<>();
+	private List<Tag> tag = new ArrayList<>();
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
-	private List<Comments> comments = new ArrayList<>();
+	private List<Comment> comment = new ArrayList<>();
 	
 	public Integer getId() {
 		return id;
@@ -89,17 +89,24 @@ public class Posts  {
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-	public List<Tags> getTags() {
-		return tags;
+	public List<Tag> getTag() {
+		return tag;
 	}
-	public void setTags(List<Tags> tags) {
-		this.tags = tags;
+	public void setTag(List<Tag> tag) {
+		this.tag = tag;
 	}
-	public List<Comments> getComments() {
-		return comments;
+	public List<Comment> getComment() {
+		return comment;
 	}
-	public void setComments(List<Comments> comment) {
-		this.comments = comment;
+	public void setComment(List<Comment> comment) {
+		this.comment = comment;
+	}
+	
+	@Override
+	public String toString() {
+		return "Post [id=" + id + ", title=" + title + ", excerpt=" + excerpt + ", content=" + content + ", author="
+				+ author + ", publishedAt=" + publishedAt + ", isPublished=" + isPublished + ", createdAt=" + createdAt
+				+ ", updatedAt=" + updatedAt + ", tag=" + tag + ", comment=" + comment + "]";
 	}
 	
 	

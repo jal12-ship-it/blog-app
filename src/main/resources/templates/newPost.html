@@ -7,14 +7,16 @@
     <script src="https://kit.fontawesome.com/e776bd7806.js" crossorigin="anonymous"></script>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title th:text="${post.title}">New Post</title>
 </head>
 
 <body>
 	<form method="POST" th:action="@{/savePost}" th:object="${post}">
-
+	<button class="btn" th:field=*{isPublished} th:value="1">Publish</button>
+	<button class="btn" th:field=*{isPublished} th:value="0">Save</button>
+	
 		<section>
-			<input id="title" type="text" placeholder="Title" th:field="*{title}">
+			<input id="title" type="text" placeholder="Title" th:field="*{title}" required>
 		</section>
 
 		<section>
@@ -23,15 +25,13 @@
 		</section>
 
 		<section>
-			<input id="tags" type="text" placeholder="#abc" th:name="tagString">
+			<input id="tags" type="text" placeholder="Enter your space-seperated tags.." th:name="tagString" th:value="${tagString}">
 		</section>	
 
 		<section>
 			<input id="author" type="text" placeholder="Name"
-				th:field="*{author}">
+				th:field="*{author}" required>
 		</section>
-		
-		<button>Publish</button>
 		
 	</form>
 

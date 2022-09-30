@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html xmlns="http:/ /www.w3.org/1999/xhtml"
+	xmlns:th="http:/ /www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/registerStyles.css">
@@ -22,14 +22,21 @@
 	</header> -->
 
     <h1>Create Account</h1>
-    <input type="text" placeholder="Name">
-    <input type="email" placeholder="Email">
-    <input type="password" placeholder="Password">
-    <input type="password" placeholder="Confirm Password">
-    <input id="btn" type="submit" value="Submit">
+    <form action="" th:action="@{/login}">
+    
+    	<input type="text" placeholder="Name" th:field="*{name}">
+    
+    	<input type="email" placeholder="Email" th:field="*{email}">
+    
+    	<input type="password" placeholder="Password" th:field="*{password}">
+    
+    	<input type="password" placeholder="Confirm Password">
+    
+    	<input id="btn" type="submit" value="Submit">
 
-    <p>Already have an account? <a href="/login">Login</a></p>
+    	<p>Already have an account? <a href="/login">Login</a></p>
         
+    </form>
 
 </body>
 
