@@ -5,22 +5,15 @@ body {
     place-items: center;
 }
 
-#nav-bar {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    position: sticky;
-    z-index: 1;
-    top: 0;
-    height: auto;
-}
-
 input {
-    display: block;
     margin: 10px;
     padding: 10px;
     border: 1px solid black;
     
+}
+
+form {
+    display: contents;
 }
 
 h1 {
@@ -40,6 +33,7 @@ p {
 
 #btn {
     background-color: rgba(127, 224, 127, 0);
+    place-items: center;
 }
 
 input:focus {

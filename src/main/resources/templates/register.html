@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http:/ /www.w3.org/1999/xhtml"
-	xmlns:th="http:/ /www.thymeleaf.org">
+<html xmlns="http:/ /www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/registerStyles.css">
@@ -11,28 +10,28 @@
 
 <body>
 
-<!-- 	<header id="header">
-		<div>
-			<nav id="nav-bar">
-				<h1>blog.com</h1>
-				<a th:href="@{/}" class="nav-link">Home</a>
-			</nav>
-		</div>
+<!--	<header id="header">-->
+<!--		<div>-->
+<!--			<nav id="nav-bar">-->
+<!--				<h1>blog.com</h1>-->
+<!--				<a th:href="@{/}" class="nav-link">Home</a>-->
+<!--			</nav>-->
+<!--		</div>-->
 
-	</header> -->
+<!--	</header>-->
 
     <h1>Create Account</h1>
-    <form action="" th:action="@{/login}">
+    <form method="post" th:action="@{/register}">
     
-    	<input type="text" placeholder="Name" th:field="*{name}">
+    	<input type="text" placeholder="Name" name="username"/>
     
-    	<input type="email" placeholder="Email" th:field="*{email}">
+    	<input type="email" placeholder="Email" name="email"/>
     
-    	<input type="password" placeholder="Password" th:field="*{password}">
+    	<input type="password" placeholder="Password" name="password"/>
     
-    	<input type="password" placeholder="Confirm Password">
+    	<input type="password" placeholder="Confirm Password" name="confirm"/>
     
-    	<input id="btn" type="submit" value="Submit">
+    	<input id="btn" type="submit" value="Register"/>
 
     	<p>Already have an account? <a href="/login">Login</a></p>
         

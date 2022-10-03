@@ -6,7 +6,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.blogapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,9 +31,10 @@ public class PostController {
 	private TagService tagService;
 	@Autowired
 	private PostService postService;
-	
+
+
 	@PostMapping("/savePost")
-	public String savePost(@ModelAttribute("post") Post post, String tagString) {
+	public String savePost(@ModelAttribute("post") Post post, String tagString, String publishType) {
 		List<String> tagList = new ArrayList<>(Arrays.asList(tagString.split(" ")));
 		
 		for (String eachTag : tagList) {
@@ -41,27 +46,33 @@ public class PostController {
 			post.getTag().add(tag);
 			}
 		}
-		
-		
-		if (post.getIsPublished() == true) {
+
+		if (publishType.equals("0")) {
+			post.setIsPublished(false);
 			post.setUpdatedAt(new Date());
 		} else {
+			post.setIsPublished(true);
 			post.setPublishedAt(new Date());
 		}
-		
+
 		postService.savePosts(post);
 		postService.createExcerpt(post.getId());
 		
 		return "redirect:/";
 	}
-	
 
+	@PreAuthorize("hasAnyRole('AUTHOR', 'ADMIN')")
 	@GetMapping("/newpost")
-	public String createPost(Model model, Post post) {
+	public String createPost(Model model, Post post, @AuthenticationPrincipal User user) {
+
+		post.setAuthor(user.getUsername());
+		post.setUser(user);
 		model.addAttribute("post", post);
 		
 		return "newPost";
 	}
+
+
 	
 	@GetMapping("/showPost/{id}")
 	public String showPost(@PathVariable(value="id") Integer id, Model model) {
@@ -78,7 +89,8 @@ public class PostController {
 		
 		return "showPost";
 	}
-	
+
+	@PreAuthorize("hasAnyRole('ADMIN', 'AUTHOR')")
 	@GetMapping("/updatePost/{id}")
 	public String updatePost(@PathVariable(value="id") Integer id, Model model, Post post) {
 		Optional<Post> optional =  postService.getPostById(id);
@@ -102,7 +114,8 @@ public class PostController {
 		
 		return "newPost";
 	}
-	
+
+	@PreAuthorize("hasAnyRole('ADMIN', 'AUTHOR')")
 	@GetMapping("/delete/{id}")
 	public String deletePost(@PathVariable(value="id") Integer id) {
 		postService.deletePostsById(id);	

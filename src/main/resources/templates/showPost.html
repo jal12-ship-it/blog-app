@@ -43,7 +43,7 @@
 				
             <button class="btn">Respond</button>
         </form>
-        <div id="comment-box" th:each="comment : ${post.comments}">
+        <div id="comment-box" th:each="comment : ${post.comment}">
             <h4 th:text=${comment.name}></h4>
             <p th:text=${comment.message}></p>
             <div sec:authorize="isAuthenticated()" ></div>

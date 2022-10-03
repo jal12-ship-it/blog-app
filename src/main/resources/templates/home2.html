@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html xmlns="http:/ /www.w3.org/1999/xhtml"
-	xmlns:th="http:/ /www.thymeleaf.org">
+	  xmlns:th="http:/ /www.thymeleaf.org"
 <head>
-<meta charset="UTF-8">
-<link rel="stylesheet" th:href="@{/styles.css}" />
+	<meta charset="UTF-8">
+	<link rel="stylesheet" th:href="@{/styles.css}"/>
 
-<script src="https://kit.fontawesome.com/e776bd7806.js"
-	crossorigin="anonymous"></script>
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://kit.fontawesome.com/e776bd7806.js"
+			crossorigin="anonymous"></script>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Blog</title>
+	<title>Blog</title>
 </head>
 
 <body>
-	<header id="header">
-		<nav id="nav-bar">
-			<h1>blog.com</h1>
-			<a th:href="@{/login}" class="nav-link">Login</a>
-		</nav>
-	</header>
+<header id="header">
+	<nav id="nav-bar">
+		<h1>blog.com</h1>
+		<a th:href="@{/login}" class="nav-link">Login</a>
+	</nav>
+</header>
 
-	<section id="filter">
+<section id="filter">
 	<form action="" th:action="@{/}">
 		<h3>Filter By :</h3>
 		<div class="container">
@@ -29,7 +29,7 @@
 				<b>Author</b>
 			</div>
 			<div id="small" th:each="author : ${authorList}">
-			<input class="child" type="checkbox" th:value="${authorStat.index}" th:text="${author}" name="authorId">
+				<input class="child" type="checkbox" th:value="${authorStat.index}" th:text="${author}" name="authorId">
 			</div>
 		</div>
 
@@ -49,79 +49,78 @@
 				<input class="child" type="checkbox" name="tagId" th:value="${tagStat.index}" th:text="${tag}">
 			</div>
 		</div>
-		
+
 		<input type="submit" value="Apply">
-		
-		</form>
-	</section>
 
-	<main>
+	</form>
+</section>
 
-		<section id="search-bar">
-			<a th:href="@{/newpost}" id="edit-btn" class="btn"><i
+<main>
+
+	<section id="search-bar">
+		<a th:href="@{/newpost}" id="edit-btn" class="btn"><i
 				class="fa-solid fa-pen-to-square"></i></a>
 
-			<form method="GET" th:action="@{/}">
-				<input id="search-field" type="text" placeholder="Search"
-					th:value="${search}" th:name="search">
-			</form>
+		<form method="GET" th:action="@{/}">
+			<input id="search-field" type="text" placeholder="Search"
+				   th:value="${search}" th:name="search">
+		</form>
 
-			<form method="get" th:action="@{/}">
-				<button id="filter-btn" class="btn">
-					<i class="fa fa-solid fa-filter"></i>
-				</button>
-			</form>
+		<form method="get" th:action="@{/}">
+			<button id="filter-btn" class="btn">
+				<i class="fa fa-solid fa-filter"></i>
+			</button>
+		</form>
 
-			<form method="get" th:action="@{/}">
-				<input type="hidden" th:value="publishedAt" th:name="sortField">
-				<input type="hidden" th:value="order=='asc' ? 'asc' : 'dsc'"
-					th:name="order">
-				<button id="sort-btn" class="btn">
-					<i class="fa fa-solid fa-sort"></i>
-				</button>
-			</form>
+		<form method="get" th:action="@{/}">
+			<input type="hidden" th:value="publishedAt" th:name="sortField">
+			<input type="hidden" th:value="order=='asc' ? 'asc' : 'dsc'"
+				   th:name="order">
+			<button id="sort-btn" class="btn">
+				<i class="fa fa-solid fa-sort"></i>
+			</button>
+		</form>
 
-		</section>
+	</section>
 
-		<section th:if="${postList.empty}">
-			<p class="center">Post Unavailable</p>
-		</section>
+	<section th:if="${postList.empty}">
+		<p class="center">Post Unavailable</p>
+	</section>
 
-		<section id="blog-post" th:each="post : ${postList}">
-			<div id="same-line">
-				<p th:text="${post.author}"></p>
-				<p th:text="${#dates.format(post.createdAt, 'dd MMM')}"></p>
+	<section id="blog-post" th:each="post : ${postList}">
+		<div id="same-line">
+			<p th:text="${post.author}"></p>
+			<p th:text="${#dates.format(post.createdAt, 'dd MMM')}"></p>
+		</div>
+
+		<h3>
+			<a th:href="@{/showPost/{id}(id=${post.id})}"
+			   th:text="${post.title}"></a>
+		</h3>
+		<p th:text="${post.excerpt}"></p>
+
+		<div id="same-line">
+			<div class="tags">
+				<p th:each="tag : ${post.tag}" id="box" th:text="${tag.name}"></p>
 			</div>
+			<a th:href="@{/delete/{id}(id=${post.id})}" id="delete-btn"
+			   class="btn"><i class="fa fa-solid fa-trash"></i></a>
+		</div>
+	</section>
 
-			<h3>
-				<a th:href="@{/showPost/{id}(id=${post.id})}"
-					th:text="${post.title}"></a>
-			</h3>
-			<p th:text="${post.excerpt}"></p>
-
-			<div id="same-line">
-				<div class="tags">
-					<p th:each="tag : ${post.tag}" id="box" th:text="${tag.name}"></p>
-				</div>
-				<a th:href="@{/delete/{id}(id=${post.id})}" id="delete-btn"
-					class="btn"><i class="fa fa-solid fa-trash"></i></a>
-			</div>
-		</section>
-
-		<nav aria-label="Page navigation example">
-			<ul class="pagination">
-				<li th:if="${currentPage != 0}" class="page-item"><a
+	<nav aria-label="Page navigation example">
+		<ul class="pagination">
+			<li th:if="${currentPage != 0}" class="page-item"><a
 					th:href="@{'/?page='+${currentPage-1} +'&pageSize='+${pageSIze}}"
 					class="page-link" href="">Previous</a></li>
-				<li class="page-item"><a
+			<li class="page-item"><a
 					th:href="@{'/?page='+${currentPage+1}+'&pageSize='+${pageSize}}"
 					class="page-link" href="#">Next</a></li>
-			</ul>
-		</nav>
+		</ul>
+	</nav>
 
 
-	</main>
-
+</main>
 
 
 </body>

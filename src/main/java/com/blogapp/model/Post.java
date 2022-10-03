@@ -4,15 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 @Entity
 public class Post  {
@@ -25,7 +17,7 @@ public class Post  {
 	@Column(length=1000)
 	private String content;
 	private String author;
-	private Date publishedAt = new Date();
+	private Date publishedAt;
 	@Column(columnDefinition = "boolean default false")
 	private Boolean isPublished;
 	private Date createdAt = new Date();
@@ -34,7 +26,8 @@ public class Post  {
 	private List<Tag> tag = new ArrayList<>();
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
 	private List<Comment> comment = new ArrayList<>();
-	
+	@ManyToOne
+	private User user;
 	public Integer getId() {
 		return id;
 	}
@@ -101,14 +94,11 @@ public class Post  {
 	public void setComment(List<Comment> comment) {
 		this.comment = comment;
 	}
-	
-	@Override
-	public String toString() {
-		return "Post [id=" + id + ", title=" + title + ", excerpt=" + excerpt + ", content=" + content + ", author="
-				+ author + ", publishedAt=" + publishedAt + ", isPublished=" + isPublished + ", createdAt=" + createdAt
-				+ ", updatedAt=" + updatedAt + ", tag=" + tag + ", comment=" + comment + "]";
+
+	public void setUser(User user) {
+		this.user = user;
 	}
-	
-	
-	
+	public User getUser() {
+		return user;
+	}
 }

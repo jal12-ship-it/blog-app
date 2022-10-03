@@ -68,6 +68,17 @@ public class Comment {
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "Comment{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", email='" + email + '\'' +
+				", message='" + message + '\'' +
+				", post=" + post +
+				", createdAt=" + createdAt +
+				", updatedAt=" + updatedAt +
+				'}';
+	}
 }

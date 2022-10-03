@@ -4,20 +4,14 @@ body {
     margin: auto;
     display: grid;
     place-items: center;
+
 }
 
-#nav-bar {
-    display: flex;
-    justify-content: space-between;
-    position: sticky;
-    z-index: 1;
-    top: 0;
-    left:0;
-    height: auto;
+form {
+    display: contents;
 }
 
 input {
-    display: block;
     margin: 10px;
     padding: 10px;
     border: 1px solid black;

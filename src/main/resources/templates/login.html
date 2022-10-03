@@ -26,10 +26,18 @@
 		password.</div>
 
 		<h1>Login</h1>
-		<input type="email" name="email" placeholder="Email"> 
-		<input type="password" name="password" placeholder="Password"> 
-		<form action="" th:action="@{/login}">
-		<input id="btn" type="submit" value="Submit">
+		<form method="post" th:action="@{/login}">
+			<div th:if="${param.error}" class="alert alert-error">
+				Invalid username and password.
+			</div>
+			<div th:if="${param.logout}" class="alert alert-success">
+				You have been logged out.
+			</div>
+			<input type="email" name="email" placeholder="Email">
+
+			<input type="password" name="password" placeholder="Password">
+
+			<input id="btn" type="submit" value="Login">
 		</form>
 		<p>
 			Don't have an account? <a th:href="@{/register}">Create one</a>

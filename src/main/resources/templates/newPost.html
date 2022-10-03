@@ -3,8 +3,7 @@
 	  	xmlns:th="http:/ /www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="styles2.css">
-    <script src="https://kit.fontawesome.com/e776bd7806.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/styles2.css">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${post.title}">New Post</title>
@@ -12,8 +11,8 @@
 
 <body>
 	<form method="POST" th:action="@{/savePost}" th:object="${post}">
-	<button class="btn" th:field=*{isPublished} th:value="1">Publish</button>
-	<button class="btn" th:field=*{isPublished} th:value="0">Save</button>
+		<button class="btn" type="submit" th:name="publishType" th:value="1">Publish</button>
+		<button class="btn" type="submit" th:name="publishType" th:value="0">Save</button>
 	
 		<section>
 			<input id="title" type="text" placeholder="Title" th:field="*{title}" required>
@@ -28,10 +27,16 @@
 			<input id="tags" type="text" placeholder="Enter your space-seperated tags.." th:name="tagString" th:value="${tagString}">
 		</section>	
 
-		<section>
-			<input id="author" type="text" placeholder="Name"
+		<section th:if="${#authorization.expression('hasRole(''ROLE_AUTHOR'')')}">
+			<input th:disabled=true id="author" type="text" placeholder="Name"
 				th:field="*{author}" required>
 		</section>
+
+		<section th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+			<input id="author" type="text" placeholder="Name"
+				   th:field="*{author}" required>
+		</section>
+
 		
 	</form>
 
