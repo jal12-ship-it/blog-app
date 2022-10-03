@@ -48,14 +48,11 @@ body {
 }
 
 header {
-    /* background-color: #ddd; */
     grid-column: 1 / 4;
-    /* margin: 0px 30px; */
 }
 
 main {
     grid-column: 2 / 2;
-    margin: auto;
 }
 
 
@@ -85,6 +82,7 @@ h1 {
     justify-content: flex-end;
     padding: 20px;
     margin-top: 30px;
+    /*position: fixed;*/
 }
 
 #edit-btn {
@@ -105,7 +103,6 @@ h1 {
 }
 
 .btn {
-    padding-right: 10px;
     margin-left: 5px;
     background-color: rgba(223, 223, 223, 0.356);
     border: none;

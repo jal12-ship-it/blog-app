@@ -28,12 +28,13 @@
 		</section>	
 
 		<section th:if="${#authorization.expression('hasRole(''ROLE_AUTHOR'')')}">
-			<input th:disabled=true id="author" type="text" placeholder="Name" name="author"
+			<input th:disabled=true id="author" type="text" placeholder="Name" th:name="author"
 				th:field="*{author}" required>
+			<input type="hidden" th:field="*{author}">
 		</section>
 
 		<section th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
-			<input id="author" type="text" placeholder="Name" name="author"
+			<input id="author" type="text" placeholder="Name" th:name="author"
 				   th:field="*{author}" required>
 		</section>
 

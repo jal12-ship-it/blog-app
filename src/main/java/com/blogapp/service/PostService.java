@@ -2,10 +2,10 @@ package com.blogapp.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +22,8 @@ public class PostService {
 		postRepository.save(post);
 	}
 
-	public Page<Post> getPosts(Boolean isPublished, Pageable pageable) {
-		return postRepository.findByIsPublished(isPublished, pageable);
+	public Set<Post> getPosts(Boolean isPublished) {
+		return postRepository.findByIsPublished(isPublished);
 	}
 
 	public Optional<Post> getPostById(Integer id) {
@@ -34,16 +34,16 @@ public class PostService {
 		postRepository.deleteById(id);
 	}
 
-	public List<String> getAuthorList() {
-		return postRepository.findDistinctAuthor();
+	public Set<String> getAuthorList(Boolean isPublished) {
+		return postRepository.findAuthorByIsPublished(isPublished);
 	}
 
-	public Page<Post> getPostsByAuthorAndTag(List<String> authorName, List<String> tagName, Pageable pageable) {
-		return postRepository.findDistinctByAuthorInAndTag_NameIn(authorName, tagName, pageable);
+	public Set<Post> getPostsByAuthorAndTag(List<String> authorName, List<String> tagName, Boolean isPublished) {
+		return postRepository.findDistinctByAuthorInAndTag_NameInAndIsPublished(authorName, tagName, isPublished);
 	}
 
-	public Page<Post> search(Pageable pageable, String search){
-		return postRepository.findByKeyword(search, pageable);
+	public Set<Post> search(String search, Boolean isPublished){
+		return postRepository.findByKeyword(search, isPublished);
 	}
 
 	public void createExcerpt(Integer id) {

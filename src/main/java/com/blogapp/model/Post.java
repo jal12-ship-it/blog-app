@@ -1,8 +1,6 @@
 package com.blogapp.model;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.persistence.*;
 
@@ -23,9 +21,9 @@ public class Post  {
 	private Date createdAt = new Date();
 	private Date updatedAt = new Date();
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Tag> tag = new ArrayList<>();
+	private Set<Tag> tag = new HashSet<>();
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
-	private List<Comment> comment = new ArrayList<>();
+	private Set<Comment> comment = new HashSet<>();
 	@ManyToOne
 	private User user;
 	public Integer getId() {
@@ -82,16 +80,16 @@ public class Post  {
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-	public List<Tag> getTag() {
+	public Set<Tag> getTag() {
 		return tag;
 	}
-	public void setTag(List<Tag> tag) {
+	public void setTag(Set<Tag> tag) {
 		this.tag = tag;
 	}
-	public List<Comment> getComment() {
+	public Set<Comment> getComment() {
 		return comment;
 	}
-	public void setComment(List<Comment> comment) {
+	public void setComment(Set<Comment> comment) {
 		this.comment = comment;
 	}
 

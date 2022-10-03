@@ -1,8 +1,6 @@
 package com.blogapp.model;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -22,7 +20,7 @@ public class Tag {
 	private Date createdAt = new Date();
 	private Date updatedAt = new Date();
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "tag")
-	private List<Post> post = new ArrayList<>();
+	private Set<Post> post = new HashSet<>();
 	public Integer getId() {
 		return id;
 	}
@@ -47,10 +45,10 @@ public class Tag {
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-	public List<Post> getPost() {
+	public Set<Post> getPost() {
 		return post;
 	}
-	public void setPost(List<Post> post) {
+	public void setPost(Set<Post> post) {
 		this.post = post;
 	}
 	

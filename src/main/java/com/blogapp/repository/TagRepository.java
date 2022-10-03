@@ -1,7 +1,9 @@
 package com.blogapp.repository;
 
 import java.util.List;
+import java.util.Set;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,13 +13,10 @@ import com.blogapp.model.Tag;
 
 public interface TagRepository extends JpaRepository<Tag, Integer> {
 
-	@Query(value="select distinct name from tag", nativeQuery = true)
-	List<String> findAllTags();
+	@Query("select distinct t.name from Tag t left join t.post post " +
+			"where post.isPublished = :isPublished")
+	Set<String> findTagsByIsPublished(Boolean isPublished);
 
-	@Query (value = "select * from post "
-			+ "left join post_tag on (post.id = post_id) "
-			+ "left join tag on (tag.id = tag_id) "
-			+ "where name = :name ", nativeQuery=true)
-	List<Post> findByName(String name, Pageable pageable);
-
+	@Query("select name from Tag")
+	List<String> findName();
 }
