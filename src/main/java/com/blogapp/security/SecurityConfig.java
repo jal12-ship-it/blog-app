@@ -1,25 +1,21 @@
 package com.blogapp.security;
 
+import com.blogapp.model.MyUserDetails;
+import com.blogapp.model.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.blogapp.model.User;
 import com.blogapp.repository.UserRepository;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Optional;
 
 
 @Configuration
@@ -32,38 +28,19 @@ public class SecurityConfig{
 		return new BCryptPasswordEncoder();
 	}
 
-//	@Bean
-//	public UserDetailsService userDetailsServiceAdmin() {
-//		List<UserDetails> usersList = new ArrayList<>();
-//		usersList.add(new User(
-//				"admin", "admin@gmail.com", passwordEncoder().encode("pass"),
-//				Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"))));
-//		return new InMemoryUserDetailsManager(usersList);
-//	}
-
-//	@Bean
-//	public InMemoryUserDetailsManager userDetailsService() {
-//		UserDetails user = User.withDefaultPasswordEncoder()
-//				.username("user")
-//				.password("password")
-//				.roles("USER")
-//				.build();
-//		return new InMemoryUserDetailsManager(user);
-//	}
-
 	@Bean
 	public UserDetailsService userDetailsService(UserRepository userRepository) {
-		System.out.println("entered in userdetails");
 		return email -> {
-			User user = userRepository.findByEmail(email);
-			if (user != null) return user;
+			Optional<User> user = userRepository.findByEmail(email);
+			if (user.isPresent()) return user.map(MyUserDetails::new).get();
+
 			throw new UsernameNotFoundException("User '" + email + "' not found");
 		};
 	}
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		return http
+		return http.csrf().disable()
 				.authorizeRequests()
 //					.antMatchers("/newpost", "/update", "/delete", "/comment").hasRole("AUTHOR")
 //					.antMatchers("/update", "/delete").hasRole("ADMIN")
@@ -72,6 +49,7 @@ public class SecurityConfig{
 					.formLogin()
 						.loginPage("/login")
 						.usernameParameter("email")
+						.permitAll()
 				.and()
 				.build();
 	}

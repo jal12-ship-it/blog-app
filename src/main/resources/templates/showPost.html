@@ -22,9 +22,10 @@
         <h2 th:text="${post.title}"></h2>
         <p th:text="${post.content}"></p>
         </article>
-
-            <a th:href="@{/updatePost/{id}(id=${post.id})}" id="edit-btn" class="btn">Update</a>
-            <a th:href="@{/delete/{id}(id=${post.id})}" id="edit-btn" class="btn">Delete</a>
+            <div th:if="${#authentication.name == post.user.username} or ${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" >
+                <a th:href="@{/updatePost/{id}(id=${post.id})}" id="edit-btn" class="btn">Update</a>
+                <a th:href="@{/delete/{id}(id=${post.id})}" id="edit-btn" class="btn">Delete</a>
+            </div>
     <hr/>
 
     <section>
@@ -46,9 +47,10 @@
         <div id="comment-box" th:each="comment : ${post.comment}">
             <h4 th:text=${comment.name}></h4>
             <p th:text=${comment.message}></p>
-            <div sec:authorize="isAuthenticated()" ></div>
-            <a th:href="@{/comment/updateComment/{id}(id=${comment.id})}" id="edit-btn" class="btn">Update</a>
-            <a th:href="@{/comment/delete/{id}(id=${comment.id})}" id="edit-btn" class="btn">Delete</a>
+            <div th:if="${#authentication.name == post.user.username}" >
+                <a th:href="@{/comment/updateComment/{id}(id=${comment.id})}" id="edit-btn" class="btn">Update</a>
+                <a th:href="@{/comment/delete/{id}(id=${comment.id})}" id="edit-btn" class="btn">Delete</a>
+            </div>
         </div>
     </section>
 

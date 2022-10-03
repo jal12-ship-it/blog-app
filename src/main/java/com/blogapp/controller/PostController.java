@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import com.blogapp.model.User;
+import com.blogapp.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,9 +18,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.blogapp.model.Comment;
-import com.blogapp.model.Post;
-import com.blogapp.model.Tag;
 import com.blogapp.service.PostService;
 import com.blogapp.service.TagService;
 
@@ -63,10 +60,10 @@ public class PostController {
 
 	@PreAuthorize("hasAnyRole('AUTHOR', 'ADMIN')")
 	@GetMapping("/newpost")
-	public String createPost(Model model, Post post, @AuthenticationPrincipal User user) {
+	public String createPost(Model model, Post post, @AuthenticationPrincipal MyUserDetails user) {
 
 		post.setAuthor(user.getUsername());
-		post.setUser(user);
+//		post.setUser(user);
 		model.addAttribute("post", post);
 		
 		return "newPost";
@@ -94,7 +91,7 @@ public class PostController {
 	@GetMapping("/updatePost/{id}")
 	public String updatePost(@PathVariable(value="id") Integer id, Model model, Post post) {
 		Optional<Post> optional =  postService.getPostById(id);
-		String tagName = "";
+		StringBuilder tagName = new StringBuilder();
 		
 		if(optional.isPresent()) {
 			post = optional.get();
@@ -104,13 +101,13 @@ public class PostController {
 		}
 		
 		for (Tag tag : post.getTag()) {
-			tagName += tag.getName() + " ";
+			tagName.append(tag.getName()).append(" ");
 		}
 		
 		System.out.println(tagName);
 		
 		model.addAttribute("post", post);
-		model.addAttribute("tagName", tagName);
+		model.addAttribute("tagName", tagName.toString());
 		
 		return "newPost";
 	}

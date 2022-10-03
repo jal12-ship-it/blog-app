@@ -60,7 +60,8 @@ public class CommentController {
 		return "updateComment";
 	}
 
-	@PostAuthorize("")
+//	@PostAuthorize("")
+	@PreAuthorize("hasRole('AUTHOR')")
 	@GetMapping("/delete/{id}")
 	public String deleteComment(@PathVariable(value="id") Integer id) {
 		commentService.deleteCommentById(id);	

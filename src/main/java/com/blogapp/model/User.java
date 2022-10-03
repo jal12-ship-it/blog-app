@@ -1,75 +1,62 @@
 package com.blogapp.model;
 
-import java.util.Arrays;
-
-import java.util.Collection;
-import java.util.List;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.sql.DataSource;
-
-import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import java.util.Collection;
 
 @Entity
 public class User implements UserDetails {
-	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	private String username;
 	private String email;
 	private String password;
-	@Transient
-	private List<SimpleGrantedAuthority> authorities;
+
+	private boolean active;
+	private String roles;
 
 
 	public User() {
 	}
 
-	public User(String username, String email, String password, List<SimpleGrantedAuthority> authorities) {
+	public User(String username, String email, String password, Boolean active, String roles) {
 		this.username = username;
 		this.email = email;
 		this.password = password;
-		this.authorities = authorities;
+		this.active = active;
+		this.roles = roles;
 	}
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return authorities;
+	public String getUsername() {
+		return username;
 	}
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return false;
 	}
 
-	@Override
-	public String getPassword() {
-		return password;
-	}
-
-	@Override
-	public String getUsername() {
-		return username;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getEmail() {
@@ -80,14 +67,32 @@ public class User implements UserDetails {
 		this.email = email;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return null;
+	}
+
+	public String getPassword() {
+		return password;
 	}
 
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+	public boolean isActive() {
+		return active;
+	}
 
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 
+	public String getRoles() {
+		return roles;
+	}
+
+	public void setRoles(String roles) {
+		this.roles = roles;
+	}
 }

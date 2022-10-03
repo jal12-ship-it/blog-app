@@ -13,6 +13,8 @@
 
 <body>
 
+	<a th:href="@{/}">Home</a>
+
 	<!-- 	<header id="header">
 		<div>
 			<nav id="nav-bar">
@@ -33,7 +35,7 @@
 			<div th:if="${param.logout}" class="alert alert-success">
 				You have been logged out.
 			</div>
-			<input type="email" name="email" placeholder="Email">
+			<input type="email" name="email" placeholder="Email" autofocus="autofocus">
 
 			<input type="password" name="password" placeholder="Password">
 

@@ -1,11 +1,8 @@
 package com.blogapp.security;
 
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.blogapp.model.User;
-
-import java.util.Arrays;
 
 public class RegistrationForm {
 
@@ -44,6 +41,7 @@ public class RegistrationForm {
 				username,
 				email,
 				passwordEncoder.encode(password),
-				Arrays.asList(new SimpleGrantedAuthority("ROLE_AUTHOR")));
+				true,
+				"ROLE_AUTHOR");
 	}
 }
