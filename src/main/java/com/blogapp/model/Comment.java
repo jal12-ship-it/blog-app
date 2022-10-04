@@ -27,21 +27,9 @@ public class Comment {
 	private String email;
 	@Column(length=5000)
 	private String message;
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Post post;
 	private Date createdAt = new Date();
 	private Date updatedAt = new Date();
 
-	@Override
-	public String toString() {
-		return "Comment{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", email='" + email + '\'' +
-				", message='" + message + '\'' +
-				", post=" + post +
-				", createdAt=" + createdAt +
-				", updatedAt=" + updatedAt +
-				'}';
-	}
 }

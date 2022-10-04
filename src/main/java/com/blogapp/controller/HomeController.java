@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+import com.blogapp.model.MyUserDetails;
+import com.blogapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,79 +45,68 @@ public class HomeController {
 
     @GetMapping
     public String home(Model model, String search, String[] authorId, @ModelAttribute("authorList") String[] authorList,
-                       String[] tagId, String sortField, @ModelAttribute("tagList") String[] tagList,
+                       String[] tagId, String sortField, @ModelAttribute("tagList") String[] tagList, String order,
                        @RequestParam(defaultValue= "0") Integer page,
-                       @RequestParam(defaultValue= "1") Integer pageSize,
-                       String order) {
+                       @RequestParam(defaultValue= "10") Integer pageSize) {
 
         Boolean isPublished = true;
-        Set<Post> posts = postService.getPosts(isPublished);
-
+        Page<Post> pages;
         Pageable pageable = PageRequest.of(page, pageSize);
 
         if(search!=null) {
-            System.out.println("In search");
-            posts.retainAll(postService.search(search, isPublished));
+            pages = postService.search(pageable, search, isPublished);
         }
-        if(authorId != null || tagId != null) {
-            System.out.println("In filter");
+        else if(authorId != null || tagId != null) {
             List<String> authorName = authorId == null ? Arrays.asList(authorList) : new ArrayList<>();
             List<String> tagName = tagId == null ? Arrays.asList(tagList) : new ArrayList<>();
 
-            if (authorId != null) {
+            if(authorId != null) {
                 Arrays.stream(authorId)
                         .map(id -> authorList[Integer.parseInt(id)])
                         .forEach(authorName::add);
             }
-            if (tagId != null) {
+            if(tagId != null) {
                 Arrays.stream(tagId)
                         .map(id -> tagList[Integer.parseInt(id)])
                         .forEach(tagName::add);
             }
 
-            posts.retainAll(postService.getPostsByAuthorAndTag(authorName, tagName, isPublished));
+            pages = postService.getPostsByAuthorAndTag(authorName, tagName, pageable);
         }
-        if(sortField != null) {
-            System.out.println("In sort");
-            if(order.equals("asc")) {
-                System.out.println("In asc");
-                pageable = PageRequest.of(page, pageSize, Sort.by(sortField).ascending());
-            } else {
-                System.out.println("In desc");
-                pageable = PageRequest.of(page, pageSize, Sort.by(sortField).descending());
+        else {
+            if(sortField != null) {
+                if(order.equals("asc")) {
+                    pageable = PageRequest.of(page, pageSize, Sort.by(sortField).ascending());
+                } else {
+                    pageable = PageRequest.of(page, pageSize, Sort.by(sortField).descending());
+                }
+
             }
+            pages = postService.getPosts(isPublished, pageable);
         }
 
-        getPage(model, page, pageSize, posts, pageable);
+        model.addAttribute("postList", pages);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize", pageSize);
         model.addAttribute("search", search);
         model.addAttribute("order", order);
-        model.addAttribute("authorId", authorId);
-        model.addAttribute("tagId", tagId);
+        model.addAttribute("totalPage", pages.getTotalPages());
 
         return "home2";
     }
 
     @GetMapping("/drafts")
     public String getDraftsPage(Model model, @RequestParam(defaultValue= "0") Integer page,
-                                @RequestParam(defaultValue= "10") Integer pageSize	) {
+                                @RequestParam(defaultValue= "10") Integer pageSize, @AuthenticationPrincipal MyUserDetails user) {
 
         Boolean isPublished = false;
-        Set<Post> posts = postService.getPosts(isPublished);
         Pageable pageable = PageRequest.of(page, pageSize);
-        getPage(model, page, pageSize, posts, pageable);
-
-        return "drafts";
-    }
-
-    private void getPage(Model model, Integer page, Integer pageSize, Set<Post> posts, Pageable pageable) {
-        Page<Post> pages = new PageImpl<>(new ArrayList<>(posts), pageable, posts.size());
-
-        System.out.println(pages + " " + pages.getTotalPages() + " " + pages.getSize());
+        Page<Post> pages = postService.getPostsByUser(isPublished, pageable, user.getUsername());
 
         model.addAttribute("postList", pages);
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", pageSize);
         model.addAttribute("totalPage", pages.getTotalPages());
+        return "drafts";
     }
-
 }

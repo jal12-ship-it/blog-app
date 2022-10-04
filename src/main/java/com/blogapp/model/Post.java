@@ -27,7 +27,7 @@ public class Post  {
 	private Boolean isPublished;
 	private Date createdAt = new Date();
 	private Date updatedAt = new Date();
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
 	private Set<Tag> tag = new HashSet<>();
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
 	private Set<Comment> comment = new HashSet<>();

@@ -1,9 +1,13 @@
 package com.blogapp.service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
+import com.blogapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +24,12 @@ public class PostService {
 		postRepository.save(post);
 	}
 
-	public Set<Post> getPosts(Boolean isPublished) {
-		return postRepository.findByIsPublished(isPublished);
+//	public Page<Post> getPost(Boolean isPublished, Pageable pageable) {
+//		return postRepository.findByIsPublishedPageable(isPublished, pageable);
+//	}
+
+	public Page<Post> getPosts(Boolean isPublished, Pageable pageable) {
+		return postRepository.findByIsPublished(isPublished, pageable);
 	}
 
 	public Optional<Post> getPostById(Integer id) {
@@ -33,24 +41,23 @@ public class PostService {
 	}
 
 	public Set<String> getAuthorList(Boolean isPublished) {
-		return postRepository.findAuthorByIsPublished(isPublished);
+		return postRepository.findDistinctAuthor(isPublished);
 	}
 
-	public Set<Post> getPostsByAuthorAndTag(List<String> authorName, List<String> tagName, Boolean isPublished) {
-		return postRepository.findByFilters(authorName, tagName, isPublished);
+	public Page<Post> getPostsByAuthorAndTag(List<String> authorName, List<String> tagName, Pageable pageable) {
+		return postRepository.findDistinctByAuthorInAndTag_NameIn(authorName, tagName, pageable);
 	}
 
-	public Set<Post> getPostsByAuthorAndTagAndDate(List<String> authorName, List<String> tagName, Date startDate,
-												   Date endDate, Boolean isPublished) {
-		return postRepository.findByFilter(authorName, tagName, startDate, endDate, isPublished);
-	}
-
-	public Set<Post> search(String search, Boolean isPublished){
-		return postRepository.findByKeyword(search, isPublished);
+	public Page<Post> search(Pageable pageable, String search, Boolean isPublished){
+		return postRepository.findByKeyword(search, pageable, isPublished);
 	}
 
 	public void createExcerpt(Integer id) {
 		postRepository.createExcerpt(id);
+	}
+
+	public Page<Post> getPostsByUser(Boolean isPublished, Pageable pageable, String username) {
+		return postRepository.findByUser_UsernameAndIsPublished(username, isPublished, pageable);
 	}
 
 }

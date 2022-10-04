@@ -1,32 +1,34 @@
 package com.blogapp.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
 @Entity
-public class User implements UserDetails {
+@NoArgsConstructor
+public class User {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	private String username;
 	private String email;
-
 	private String password;
-
 	private boolean active;
 	private String roles;
 
-
-	public User() {
-	}
+	@OneToMany(cascade = CascadeType.ALL,
+			mappedBy = "user", orphanRemoval = true)
+	private Set<Post> post = new HashSet<>();
 
 	public User(String username, String email, String password, Boolean active, String roles) {
 		this.username = username;
@@ -35,44 +37,5 @@ public class User implements UserDetails {
 		this.active = active;
 		this.roles = roles;
 	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		return false;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return false;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return false;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return false;
-	}
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return null;
-	}
-
-	@Override
-	public String getPassword() {
-		return password;
-	}
-
-	public boolean isActive() {
-		return active;
-	}
-
 
 }

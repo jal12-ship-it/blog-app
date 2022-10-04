@@ -24,7 +24,7 @@ public class Tag {
 	private String name;
 	private Date createdAt = new Date();
 	private Date updatedAt = new Date();
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "tag")
+	@ManyToMany(mappedBy = "tag", cascade = {CascadeType.PERSIST, CascadeType.DETACH}, fetch = FetchType.LAZY)
 	private Set<Post> post = new HashSet<>();
 
 

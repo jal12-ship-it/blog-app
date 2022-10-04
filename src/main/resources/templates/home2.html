@@ -14,130 +14,130 @@
 </head>
 
 <body>
-	<header>
-		<nav id="nav-bar">
-			<div id="same-line">
-				<h1>blog.com</h1>
-				<a id="draft" sec:authorize="isAuthenticated()" th:href="@{/drafts}">Drafts</a>
+<header>
+	<nav id="nav-bar">
+		<div id="same-line">
+			<h1>blog.com</h1>
+			<a id="draft" sec:authorize="isAuthenticated()" th:href="@{/drafts}">Drafts</a>
+		</div>
+		<div sec:authorize="isAnonymous()">
+			<a th:href="@{/login}" class="nav-link btn">Login</a>
+		</div>
+
+		<div sec:authorize = "isAuthenticated()">
+			<a th:href="@{/logout}" class="nav-link btn"><span sec:authentication="name">Logout</span></a>
+		</div>
+	</nav>
+</header>
+
+
+<section id="filter">
+	<div id="same-line">
+		<h3>Filter By :</h3>
+		<form th:action="@{/}">
+			<input class="btn" type="submit" value="Clear">
+		</form>
+	</div>
+
+	<form method="get" th:action="@{/}">
+		<div class="container">
+			<div id="category">
+				<b>Author</b>
 			</div>
-			<div sec:authorize="isAnonymous()">
-				<a th:href="@{/login}" class="nav-link btn">Login</a>
+			<div id="small" th:each="author : ${authorList}">
+				<input class="child" type="checkbox" th:value="${authorStat.index}" th:text="${author}" name="authorId">
 			</div>
+		</div>
 
-			<div sec:authorize = "isAuthenticated()">
-				<a th:href="@{/logout}" class="nav-link btn"><span sec:authentication="name">Logout</span></a>
+		<div class="container">
+			<div id="category">
+				<b>Published Date & Time</b>
 			</div>
-		</nav>
-	</header>
+			<input id="input-box" type="date" name="startPublishedDate">
+			<input id="input-box" type="date" name="endPublishedDate">
+		</div>
 
-
-	<section id="filter">
-			<div id="same-line">
-				<h3>Filter By :</h3>
-				<form th:action="@{/}">
-					<input class="btn" type="submit" value="Clear">
-				</form>
+		<div class="container">
+			<div id="category">
+				<b>Tags</b>
 			</div>
-
-		<form method="get" th:action="@{/}">
-			<div class="container">
-				<div id="category">
-					<b>Author</b>
-				</div>
-				<div id="small" th:each="author : ${authorList}">
-					<input class="child" type="checkbox" th:value="${authorStat.index}" th:text="${author}" name="authorId">
-				</div>
+			<div id="small" th:each="tag : ${tagList}">
+				<input class="child" type="checkbox" name="tagId" th:value="${tagStat.index}" th:text="${tag}">
 			</div>
+		</div>
 
-			<div class="container">
-				<div id="category">
-					<b>Published Date & Time</b>
-				</div>
-					<input id="input-box" type="date" name="startPublishedDate">
-					<input id="input-box" type="date" name="endPublishedDate">
+		<input type="submit" value="Apply">
+
+	</form>
+</section>
+
+<main>
+	<section id="search-bar">
+		<a th:href="@{/newpost}" id="edit-btn" class="btn"><i
+				class="fa-solid fa-pen-to-square"></i></a>
+
+		<form method="GET" th:action="@{/}">
+			<input id="search-field" type="search" placeholder="Search"
+				   th:value="${search}" th:name="search"/>
+		</form>
+
+		<form method="GET" th:action="@{/}">
+			<div id="sort">
+				<label for="sort">Sorted by: </label>
+				<select id="search-field sort" name="order" onchange="this.form.submit()">
+					<option value="asc">Published At: ascending</option>
+					<option th:selected="${order == 'desc'}" value="desc">Published At: descending</option>
+				</select>
+				<input type="hidden" th:value="publishedAt" th:name="sortField"/>
+				<!--					<input type="submit" value="Submit">-->
 			</div>
-
-			<div class="container">
-				<div id="category">
-					<b>Tags</b>
-				</div>
-				<div id="small" th:each="tag : ${tagList}">
-					<input class="child" type="checkbox" name="tagId" th:value="${tagStat.index}" th:text="${tag}">
-				</div>
-			</div>
-
-			<input type="submit" value="Apply">
-
 		</form>
 	</section>
 
-	<main>
-		<section id="search-bar">
-			<a th:href="@{/newpost}" id="edit-btn" class="btn"><i
-				class="fa-solid fa-pen-to-square"></i></a>
+	<div  th:if="${search}">Showing Results for: <span th:text="${search}"></span></div>
+	<div th:if="${authorId} or ${tagId}" class="tags">
+		<p th:each="index : ${authorId}" id="box" th:text="${authorList[index]}"></p>
+		<p th:each="index : ${tagid}" id="box" th:text="${tagList[index]}"></p>
+	</div>
 
-			<form method="GET" th:action="@{/}">
-				<input id="search-field" type="search" placeholder="Search"
-				   th:value="${search}" th:name="search"/>
-			</form>
+	<section th:if="${postList.empty}">
+		<p class="center">Post Unavailable</p>
+	</section>
 
-			<form method="GET" th:action="@{/}">
-				<div id="sort">
-					<label for="sort">Sorted by: </label>
-					<select id="search-field sort" name="order" onchange="this.form.submit()">
-						<option value="asc">Published At: ascending</option>
-						<option th:selected="${order == 'desc'}" value="desc">Published At: descending</option>
-					</select>
-					<input type="hidden" th:value="publishedAt" th:name="sortField"/>
-<!--					<input type="submit" value="Submit">-->
-				</div>
-			</form>
-		</section>
-
-		<div  th:if="${search}">Showing Results for: <span th:text="${search}"></span></div>
-		<div th:if="${authorId} or ${tagId}" class="tags">
-			<p th:each="index : ${authorId}" id="box" th:text="${authorList[index]}"></p>
-			<p th:each="index : ${tagid}" id="box" th:text="${tagList[index]}"></p>
+	<section id="blog-post" th:each="post : ${postList}">
+		<div id="same-line">
+			<p th:text="${post.author}"></p>
+			<p th:text="${#dates.format(post.publishedAt, 'dd MMM')}"></p>
 		</div>
 
-		<section th:if="${postList.empty}">
-			<p class="center">Post Unavailable</p>
-		</section>
+		<h3>
+			<a th:href="@{/showPost/{id}(id=${post.id})}"
+			   th:text="${post.title}"></a>
+		</h3>
+		<p th:text="${post.excerpt}"></p>
 
-		<section id="blog-post" th:each="post : ${postList}">
-			<div id="same-line">
-				<p th:text="${post.author}"></p>
-				<p th:text="${#dates.format(post.publishedAt, 'dd MMM')}"></p>
+		<div id="same-line">
+			<div class="tags">
+				<p th:each="tag : ${post.tag}" id="box" th:text="${tag.name}"></p>
 			</div>
 
-			<h3>
-				<a th:href="@{/showPost/{id}(id=${post.id})}"
-				   th:text="${post.title}"></a>
-			</h3>
-			<p th:text="${post.excerpt}"></p>
-
-			<div id="same-line">
-				<div class="tags">
-					<p th:each="tag : ${post.tag}" id="box" th:text="${tag.name}"></p>
-				</div>
-
-				<div th:if="${#authentication.name == post.user.username}" >
-					<a th:href="@{/delete/{id}(id=${post.id})}" id="delete-btn"
-			  		 class="btn"><i class="fa fa-solid fa-trash"></i></a>
-				</div>
+			<div th:if="${#authentication.name == post.user.username}" >
+				<a th:href="@{/delete/{id}(id=${post.id})}" id="delete-btn"
+				   class="btn"><i class="fa fa-solid fa-trash"></i></a>
 			</div>
-		</section>
+		</div>
+	</section>
 
-		<nav aria-label="Page navigation example">
-			<ul class="pagination" id="same-line">
-				<li th:if="${currentPage != 0}" class="page-item"><a
-						th:href="@{'/?page='+${currentPage-1} +'&pageSize='+${pageSize}}"
-						class="page-link" href="">Previous</a></li>
-				<li th:if="${currentPage < totalPage-1}" class="page-item"><a
-						th:href="@{'/?page='+${currentPage+1}+'&pageSize='+${pageSize}}"
-						class="page-link" href="#">Next</a></li>
-			</ul>
-		</nav>
-	</main>
+	<nav aria-label="Page navigation example">
+		<ul class="pagination" id="same-line">
+			<li th:if="${currentPage != 0}" class="page-item"><a
+					th:href="@{'/?page='+${currentPage-1} +'&pageSize='+${pageSize}}"
+					class="page-link" href="">Previous</a></li>
+			<li th:if="${currentPage < totalPage-1}" class="page-item"><a
+					th:href="@{'/?page='+${currentPage+1}+'&pageSize='+${pageSize}}"
+					class="page-link" href="#">Next</a></li>
+		</ul>
+	</nav>
+</main>
 </body>
 </html>
