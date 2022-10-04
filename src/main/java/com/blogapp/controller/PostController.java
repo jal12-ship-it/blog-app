@@ -1,15 +1,10 @@
 package com.blogapp.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
 import com.blogapp.model.*;
 import com.blogapp.repository.UserRepository;
+import com.blogapp.service.PostService;
+import com.blogapp.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -19,8 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.blogapp.service.PostService;
-import com.blogapp.service.TagService;
+import java.util.*;
 
 @Controller
 public class PostController {
@@ -38,23 +32,24 @@ public class PostController {
 		List<String> tagList = new ArrayList<>(Arrays.asList(tagString.split(" ")));
 		
 		for (String eachTag : tagList) {
-			Tag tag = new Tag();
-			if(tagService.getTags().contains(eachTag)) {
-				post.getTag().add(tag);
-			} else {	
+			Tag tag = tagService.getTagByName(eachTag) == null ? new Tag() : tagService.getTagByName(eachTag);
+
 			tag.setName(eachTag);
 			post.getTag().add(tag);
-			}
+			tag.getPost().add(post);
 		}
 
 		post.setUser(userRepository.findByEmail(userDetails.getEmail()).get());
 
-		if (publishType.equals("0")) {
-			post.setIsPublished(false);
-			post.setUpdatedAt(new Date());
-		} else {
-			post.setIsPublished(true);
-			post.setPublishedAt(new Date());
+		switch (publishType) {
+			case "0":
+				post.setIsPublished(false);
+				post.setUpdatedAt(new Date());
+				break;
+			case "1":
+				post.setIsPublished(true);
+				post.setPublishedAt(new Date());
+				break;
 		}
 
 		postService.savePosts(post);
@@ -68,7 +63,6 @@ public class PostController {
 	public String createPost(Model model, Post post, @AuthenticationPrincipal MyUserDetails user) {
 
 		post.setAuthor(user.getUsername());
-//		post.setUser(user);
 		model.addAttribute("post", post);
 		
 		return "newPost";
@@ -96,7 +90,7 @@ public class PostController {
 	@GetMapping("/updatePost/{id}")
 	public String updatePost(@PathVariable(value="id") Integer id, Model model, Post post) {
 		Optional<Post> optional =  postService.getPostById(id);
-		StringBuilder tagName = new StringBuilder();
+		StringBuilder tagString = new StringBuilder();
 		
 		if(optional.isPresent()) {
 			post = optional.get();
@@ -106,13 +100,12 @@ public class PostController {
 		}
 		
 		for (Tag tag : post.getTag()) {
-			tagName.append(tag.getName()).append(" ");
+			tagString.append(tag.getName()).append(" ");
 		}
 		
-		System.out.println(tagName);
-		
+
 		model.addAttribute("post", post);
-		model.addAttribute("tagName", tagName.toString());
+		model.addAttribute("tagString", tagString.toString());
 		
 		return "newPost";
 	}

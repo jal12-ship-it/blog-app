@@ -1,8 +1,6 @@
 package com.blogapp.service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,7 +12,7 @@ import com.blogapp.repository.PostRepository;
 
 @Service
 public class PostService {
-	
+
 	@Autowired
 	private PostRepository postRepository;
 
@@ -39,7 +37,12 @@ public class PostService {
 	}
 
 	public Set<Post> getPostsByAuthorAndTag(List<String> authorName, List<String> tagName, Boolean isPublished) {
-		return postRepository.findDistinctByAuthorInAndTag_NameInAndIsPublished(authorName, tagName, isPublished);
+		return postRepository.findByFilters(authorName, tagName, isPublished);
+	}
+
+	public Set<Post> getPostsByAuthorAndTagAndDate(List<String> authorName, List<String> tagName, Date startDate,
+												   Date endDate, Boolean isPublished) {
+		return postRepository.findByFilter(authorName, tagName, startDate, endDate, isPublished);
 	}
 
 	public Set<Post> search(String search, Boolean isPublished){

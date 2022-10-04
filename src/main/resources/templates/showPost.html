@@ -32,7 +32,7 @@
         <h4>Comment</h4>
         <form method="post" th:action="@{/comment/saveComment}" th:object="${comments}">
             <label for="name">Name</label>
-            <input type="text" th:field="*{name}">
+            <input type="text" th:field="*{name}" th:value="${#authentication.name}">
 
             <label for="name">Email</label>
             <input type="email" th:field="*{email}">

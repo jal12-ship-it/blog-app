@@ -1,11 +1,15 @@
 package com.blogapp.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
 
+@Getter
+@Setter
 @Entity
 public class User implements UserDetails {
 
@@ -14,6 +18,7 @@ public class User implements UserDetails {
 	private Long id;
 	private String username;
 	private String email;
+
 	private String password;
 
 	private boolean active;
@@ -55,44 +60,19 @@ public class User implements UserDetails {
 		return false;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return null;
 	}
 
+	@Override
 	public String getPassword() {
 		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public boolean isActive() {
 		return active;
 	}
 
-	public void setActive(boolean active) {
-		this.active = active;
-	}
 
-	public String getRoles() {
-		return roles;
-	}
-
-	public void setRoles(String roles) {
-		this.roles = roles;
-	}
 }

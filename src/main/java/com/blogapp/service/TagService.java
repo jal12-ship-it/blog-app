@@ -22,7 +22,8 @@ public class TagService {
 	public List<String> getTags() {
 		return tagRepository.findName();
 	}
-	public void saveTags(Tag tag) {
-		tagRepository.save(tag);
-	}
+
+    public Tag getTagByName(String eachTag) {
+		return tagRepository.findByName(eachTag);
+    }
 }

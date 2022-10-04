@@ -15,9 +15,9 @@
 <body>
 <header id="header">
   <nav id="nav-bar">
-    <div>
+    <div id="same-line">
       <h1>Drafts</h1>
-      <a th:href="@{/drafts}"></a>
+      <a id="draft" th:href="@{/}">Home</a>
     </div>
     <div sec:authorize = "isAuthenticated()">
       <a th:href="@{/logout}" class="nav-link"><span sec:authentication="name">Logout</span></a>

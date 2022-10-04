@@ -13,7 +13,9 @@
 	<form method="POST" th:action="@{/savePost}" th:object="${post}">
 		<button class="btn" type="submit" th:name="publishType" th:value="1">Publish</button>
 		<button class="btn" type="submit" th:name="publishType" th:value="0">Save</button>
-	
+
+		<input type="hidden" th:field="*{id}">
+
 		<section>
 			<input id="title" type="text" placeholder="Title" th:field="*{title}" required>
 		</section>
