@@ -5,64 +5,64 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/styles.css}"/>
 
-    <script src="https://kit.fontawesome.com/e776bd7806.js"
-            crossorigin="anonymous"></script>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script crossorigin="anonymous"
+            src="https://kit.fontawesome.com/e776bd7806.js"></script>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Drafts</title>
 </head>
 
 <body>
 <header id="header">
-  <nav id="nav-bar">
-    <div id="same-line">
-      <h1>Drafts</h1>
-      <a id="draft" th:href="@{/}">Home</a>
-    </div>
-    <div sec:authorize = "isAuthenticated()">
-      <a th:href="@{/logout}" class="nav-link"><span sec:authentication="name">Logout</span></a>
-    </div>
-  </nav>
+    <nav id="nav-bar">
+        <div id="same-line">
+            <h1>Drafts</h1>
+            <a id="draft" th:href="@{/}">Home</a>
+        </div>
+        <div sec:authorize="isAuthenticated()">
+            <a class="nav-link" th:href="@{/logout}"><span sec:authentication="name">Logout</span></a>
+        </div>
+    </nav>
 </header>
 
 <!--<div th:if=""></div>-->
 <main>
-  <section th:if="${postList.empty}">
-    <p class="center">No post in draft</p>
-  </section>
+    <section th:if="${postList.empty}">
+        <p class="center">No post in draft</p>
+    </section>
 
-  <section id="blog-post" th:each="post : ${postList}">
-    <div id="same-line">
-      <p th:text="${post.author}"></p>
-      <p th:text="${#dates.format(post.createdAt, 'dd MMM')}"></p>
-    </div>
+    <section id="blog-post" th:each="post : ${postList}">
+        <div id="same-line">
+            <p th:text="${post.author}"></p>
+            <p th:text="${#dates.format(post.createdAt, 'dd MMM')}"></p>
+        </div>
 
-    <h3>
-      <a th:href="@{/showPost/{id}(id=${post.id})}"
-         th:text="${post.title}"></a>
-    </h3>
-    <p th:text="${post.excerpt}"></p>
+        <h3>
+            <a th:href="@{/showPost/{id}(id=${post.id})}"
+               th:text="${post.title}"></a>
+        </h3>
+        <p th:text="${post.excerpt}"></p>
 
-    <div id="same-line">
-      <div class="tags">
-        <p th:each="tag : ${post.tag}" id="box" th:text="${tag.name}"></p>
-      </div>
+        <div id="same-line">
+            <div class="tags">
+                <p id="box" th:each="tag : ${post.tag}" th:text="${tag.name}"></p>
+            </div>
 
-        <a th:href="@{/delete/{id}(id=${post.id})}" id="delete-btn"
-           class="btn"><i class="fa fa-solid fa-trash"></i></a>
-    </div>
-  </section>
+            <a class="btn" id="delete-btn"
+               th:href="@{/delete/{id}(id=${post.id})}"><i class="fa fa-solid fa-trash"></i></a>
+        </div>
+    </section>
 
-  <nav aria-label="Page navigation example">
-    <ul class="pagination">
-      <li th:if="${currentPage != 0}" class="page-item"><a
-              th:href="@{'/drafts?page='+${currentPage-1} +'&pageSize='+${pageSize}}"
-              class="page-link" href="">Previous</a></li>
-      <li th:if="${currentPage < totalPage-1}" class="page-item"><a
-              th:href="@{'/drafts?page='+${currentPage+1}+'&pageSize='+${pageSize}}"
-              class="page-link" href="#">Next</a></li>
-    </ul>
-  </nav>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item" th:if="${currentPage != 0}"><a
+                    class="page-link"
+                    href="" th:href="@{'/drafts?page='+${currentPage-1} +'&pageSize='+${pageSize}}">Previous</a></li>
+            <li class="page-item" th:if="${currentPage < totalPage-1}"><a
+                    class="page-link"
+                    href="#" th:href="@{'/drafts?page='+${currentPage+1}+'&pageSize='+${pageSize}}">Next</a></li>
+        </ul>
+    </nav>
 </main>
 </body>
 </html>

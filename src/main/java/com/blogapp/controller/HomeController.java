@@ -44,36 +44,34 @@ public class HomeController {
     @GetMapping
     public String home(Model model, String search, String[] authorId, @ModelAttribute("authorList") String[] authorList,
                        String[] tagId, String sortField, @ModelAttribute("tagList") String[] tagList, String order,
-                       @RequestParam(defaultValue= "0") Integer page,
-                       @RequestParam(defaultValue= "10") Integer pageSize) {
+                       @RequestParam(defaultValue = "0") Integer page,
+                       @RequestParam(defaultValue = "10") Integer pageSize) {
 
         Boolean isPublished = true;
         Page<Post> pages;
         Pageable pageable = PageRequest.of(page, pageSize);
 
-        if(search!=null) {
+        if (search != null) {
             pages = postService.search(pageable, search, isPublished);
-        }
-        else if(authorId != null || tagId != null) {
+        } else if (authorId != null || tagId != null) {
             List<String> authorName = authorId == null ? Arrays.asList(authorList) : new ArrayList<>();
             List<String> tagName = tagId == null ? Arrays.asList(tagList) : new ArrayList<>();
 
-            if(authorId != null) {
+            if (authorId != null) {
                 Arrays.stream(authorId)
                         .map(id -> authorList[Integer.parseInt(id)])
                         .forEach(authorName::add);
             }
-            if(tagId != null) {
+            if (tagId != null) {
                 Arrays.stream(tagId)
                         .map(id -> tagList[Integer.parseInt(id)])
                         .forEach(tagName::add);
             }
 
             pages = postService.getPostsByAuthorAndTag(authorName, tagName, pageable);
-        }
-        else {
-            if(sortField != null) {
-                if(order.equals("asc")) {
+        } else {
+            if (sortField != null) {
+                if (order.equals("asc")) {
                     pageable = PageRequest.of(page, pageSize, Sort.by(sortField).ascending());
                 } else {
                     pageable = PageRequest.of(page, pageSize, Sort.by(sortField).descending());
@@ -94,8 +92,8 @@ public class HomeController {
     }
 
     @GetMapping("/drafts")
-    public String getDraftsPage(Model model, @RequestParam(defaultValue= "0") Integer page,
-                                @RequestParam(defaultValue= "10") Integer pageSize, @AuthenticationPrincipal MyUserDetails user) {
+    public String getDraftsPage(Model model, @RequestParam(defaultValue = "0") Integer page,
+                                @RequestParam(defaultValue = "10") Integer pageSize, @AuthenticationPrincipal MyUserDetails user) {
 
         Boolean isPublished = false;
         Pageable pageable = PageRequest.of(page, pageSize);

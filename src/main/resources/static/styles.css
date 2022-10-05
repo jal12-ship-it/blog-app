@@ -19,7 +19,7 @@ body {
 }
 
 #input-box {
-	width: 150px;
+    width: 150px;
 }
 
 .container {
@@ -145,10 +145,10 @@ h1 {
 }
 
 .center {
-	text-align: center;
-	font-size: 25px;
-	color: grey;
-	
+    text-align: center;
+    font-size: 25px;
+    color: grey;
+
 }
 
 

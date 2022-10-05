@@ -1,47 +1,48 @@
 <!DOCTYPE html>
 <html xmlns="http:/ /www.w3.org/1999/xhtml"
-	  	xmlns:th="http:/ /www.thymeleaf.org">
+      xmlns:th="http:/ /www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/styles2.css">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/styles2.css" rel="stylesheet">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title th:text="${post.title}">New Post</title>
 </head>
 
 <body>
-	<form method="POST" th:action="@{/savePost}" th:object="${post}">
-		<button class="btn" type="submit" th:name="publishType" th:value="1">Publish</button>
-		<button class="btn" type="submit" th:name="publishType" th:value="0">Save</button>
+<form method="POST" th:action="@{/savePost}" th:object="${post}">
+    <button class="btn" th:name="publishType" th:value="1" type="submit">Publish</button>
+    <button class="btn" th:name="publishType" th:value="0" type="submit">Save</button>
 
-		<input type="hidden" th:field="*{id}">
+    <input th:field="*{id}" type="hidden">
 
-		<section>
-			<input id="title" type="text" placeholder="Title" th:field="*{title}" required>
-		</section>
+    <section>
+        <input id="title" placeholder="Title" required th:field="*{title}" type="text">
+    </section>
 
-		<section>
-			<textarea rows="30" id="content" placeholder="Write here.."
-				th:field="*{content}"></textarea>
-		</section>
+    <section>
+			<textarea id="content" placeholder="Write here.." rows="30"
+                      th:field="*{content}"></textarea>
+    </section>
 
-		<section>
-			<input id="tags" type="text" placeholder="Enter your space-seperated tags.." th:name="tagString" th:value="${tagString}">
-		</section>	
+    <section>
+        <input id="tags" placeholder="Enter your space-seperated tags.." th:name="tagString" th:value="${tagString}"
+               type="text">
+    </section>
 
-		<section th:if="${#authorization.expression('hasRole(''ROLE_AUTHOR'')')}">
-			<input th:disabled=true id="author" type="text" placeholder="Name" th:name="author"
-				th:field="*{author}" required>
-			<input type="hidden" th:field="*{author}">
-		</section>
+    <section th:if="${#authorization.expression('hasRole(''ROLE_AUTHOR'')')}">
+        <input id="author" placeholder="Name" required th:disabled=true th:field="*{author}"
+               th:name="author" type="text">
+        <input th:field="*{author}" type="hidden">
+    </section>
 
-		<section th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
-			<input id="author" type="text" placeholder="Name" th:name="author"
-				   th:field="*{author}" required>
-		</section>
+    <section th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <input id="author" placeholder="Name" required th:field="*{author}"
+               th:name="author" type="text">
+    </section>
 
-		
-	</form>
+
+</form>
 
 </body>
 

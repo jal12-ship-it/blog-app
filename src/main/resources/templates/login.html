@@ -1,49 +1,50 @@
 <!DOCTYPE html>
 <html xmlns="http:/ /www.w3.org/1999/xhtml"
-	xmlns:th="http:/ /www.thymeleaf.org">
+      xmlns:th="http:/ /www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<link rel="stylesheet" th:href="@{/loginStyles.css}" />
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/loginStyles.css}"/>
 
-<script src="https://kit.fontawesome.com/e776bd7806.js"
-	crossorigin="anonymous"></script>
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script crossorigin="anonymous"
+            src="https://kit.fontawesome.com/e776bd7806.js"></script>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 </head>
 
 <body>
 
-	<a th:href="@{/}">Home</a>
+<a th:href="@{/}">Home</a>
 
-	<!-- 	<header id="header">
-		<div>
-			<nav id="nav-bar">
-				<h1>blog.com</h1>
-				<a th:href="@{/}" class="nav-link">Home</a>
-			</nav>
-		</div>
+<!-- 	<header id="header">
+    <div>
+        <nav id="nav-bar">
+            <h1>blog.com</h1>
+            <a th:href="@{/}" class="nav-link">Home</a>
+        </nav>
+    </div>
 
-	</header>-->
-	<div th:if="${error}">Unable to login. Check your email and
-		password.</div>
+</header>-->
+<div th:if="${error}">Unable to login. Check your email and
+    password.
+</div>
 
-		<h1>Login</h1>
-		<form method="post" th:action="@{/login}">
-			<div th:if="${param.error}" class="alert alert-error">
-				Invalid username and password.
-			</div>
-			<div th:if="${param.logout}" class="alert alert-success">
-				You have been logged out.
-			</div>
-			<input type="email" name="email" placeholder="Email" autofocus="autofocus">
+<h1>Login</h1>
+<form method="post" th:action="@{/login}">
+    <div class="alert alert-error" th:if="${param.error}">
+        Invalid username and password.
+    </div>
+    <div class="alert alert-success" th:if="${param.logout}">
+        You have been logged out.
+    </div>
+    <input autofocus="autofocus" name="email" placeholder="Email" type="email">
 
-			<input type="password" name="password" placeholder="Password">
+    <input name="password" placeholder="Password" type="password">
 
-			<input id="btn" type="submit" value="Login">
-		</form>
-		<p>
-			Don't have an account? <a th:href="@{/register}">Create one</a>
-		</p>
+    <input id="btn" type="submit" value="Login">
+</form>
+<p>
+    Don't have an account? <a th:href="@{/register}">Create one</a>
+</p>
 
 </body>
 
