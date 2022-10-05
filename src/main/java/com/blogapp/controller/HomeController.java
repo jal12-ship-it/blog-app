@@ -1,12 +1,9 @@
 package com.blogapp.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-
 import com.blogapp.model.MyUserDetails;
-import com.blogapp.repository.UserRepository;
+import com.blogapp.model.Post;
+import com.blogapp.service.PostService;
+import com.blogapp.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,9 +17,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.blogapp.model.Post;
-import com.blogapp.service.PostService;
-import com.blogapp.service.TagService;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/")
