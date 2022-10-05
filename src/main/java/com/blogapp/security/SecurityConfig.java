@@ -1,7 +1,7 @@
 package com.blogapp.security;
 
 import com.blogapp.model.MyUserDetails;
-import com.blogapp.model.User;
+import com.blogapp.model.Users;
 import com.blogapp.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +30,7 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
         return email -> {
-            Optional<User> user = userRepository.findByEmail(email);
+            Optional<Users> user = userRepository.findByEmail(email);
             if (user.isPresent()) return user.map(MyUserDetails::new).get();
 
             throw new UsernameNotFoundException("User '" + email + "' not found");

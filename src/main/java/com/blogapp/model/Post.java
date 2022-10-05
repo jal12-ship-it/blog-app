@@ -30,6 +30,6 @@ public class Post {
     private Set<Tag> tag = new HashSet<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
     private Set<Comment> comment = new HashSet<>();
-    @ManyToOne
-    private User user;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Users user;
 }

@@ -21,7 +21,7 @@ public class MyUserDetails implements UserDetails {
     private boolean active;
     private List<GrantedAuthority> authorities;
 
-    public MyUserDetails(User user) {
+    public MyUserDetails(Users user) {
         this.username = user.getUsername();
         this.email = user.getEmail();
         this.password = user.getPassword();

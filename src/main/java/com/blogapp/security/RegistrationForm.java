@@ -1,6 +1,6 @@
 package com.blogapp.security;
 
-import com.blogapp.model.User;
+import com.blogapp.model.Users;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class RegistrationForm {
@@ -34,8 +34,8 @@ public class RegistrationForm {
     }
 
 
-    public User toUser(PasswordEncoder passwordEncoder) {
-        return new User(
+    public Users toUser(PasswordEncoder passwordEncoder) {
+        return new Users(
                 username,
                 email,
                 passwordEncoder.encode(password),

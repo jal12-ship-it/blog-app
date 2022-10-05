@@ -12,7 +12,7 @@ import java.util.Set;
 @Setter
 @Entity
 @NoArgsConstructor
-public class User {
+public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +24,10 @@ public class User {
     private String roles;
 
     @OneToMany(cascade = CascadeType.ALL,
-            mappedBy = "user", orphanRemoval = true)
+            mappedBy = "user")
     private Set<Post> post = new HashSet<>();
 
-    public User(String username, String email, String password, Boolean active, String roles) {
+    public Users(String username, String email, String password, Boolean active, String roles) {
         this.username = username;
         this.email = email;
         this.password = password;
