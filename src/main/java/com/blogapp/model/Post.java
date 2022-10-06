@@ -18,7 +18,7 @@ public class Post {
     private Integer id;
     private String title;
     private String excerpt;
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String content;
     private String author;
     private Date publishedAt;

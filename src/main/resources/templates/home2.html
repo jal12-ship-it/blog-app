@@ -49,12 +49,12 @@
             </div>
         </div>
 
-        <div class="container">
+        <div class="container" th:object="${filter}">
             <div id="category">
                 <b>Published Date & Time</b>
             </div>
-            <input id="input-box" name="startPublishedDate" type="date">
-            <input id="input-box" name="endPublishedDate" type="date">
+            <span>Date from:</span> <input id="input-box" name="startPublishedDate" type="date" th:field="*{filter.dateFrom}">
+            <span>Date to:</span><input id="input-box" name="endPublishedDate" type="date" th:field="*{filter.dateTo}">
         </div>
 
         <div class="container">

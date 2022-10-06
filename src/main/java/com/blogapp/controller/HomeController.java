@@ -1,5 +1,6 @@
 package com.blogapp.controller;
 
+import com.blogapp.model.DateRange;
 import com.blogapp.model.MyUserDetails;
 import com.blogapp.model.Post;
 import com.blogapp.service.PostService;
@@ -17,10 +18,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 
 @Controller
 @RequestMapping("/")
@@ -37,6 +36,11 @@ public class HomeController {
         Set<String> authorList = postService.getAuthorList(isPublished);
         Set<String> tagList = tagService.getTags(isPublished);
 
+        DateRange dateRange = new DateRange();
+        dateRange.setDateFrom(new Date());
+        dateRange.setDateTo(new Date());
+
+        model.addAttribute("filter", dateRange);
         model.addAttribute("authorList", authorList);
         model.addAttribute("tagList", tagList);
     }
