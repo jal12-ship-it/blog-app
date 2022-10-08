@@ -41,7 +41,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/", "/**").permitAll()
+                .antMatchers("/", "/**","/api/**").permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/login")

@@ -1,82 +1,143 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http:/ /www.w3.org/1999/xhtml"
+      xmlns:th="http:/ /www.thymeleaf.org"
 <head>
     <meta charset="UTF-8">
-    <link href="styles.css" rel="stylesheet">
-    <script crossorigin="anonymous" src="https://kit.fontawesome.com/e776bd7806.js"></script>
+    <link rel="stylesheet" th:href="@{/styles.css}"/>
+
+    <script crossorigin="anonymous"
+            src="https://kit.fontawesome.com/e776bd7806.js"></script>
     <meta content="IE=edge" http-equiv="X-UA-Compatible">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Document</title>
+
+    <title>Blog</title>
 </head>
+
 <body>
-
-
-<section id="search-bar">
-    <button class="btn" id="edit-btn"><i class="fa-solid fa-pen-to-square"></i></button>
-    <input id="search-field" placeholder="Search" type="text">
-    <button class="btn" id="filter-btn"><i class="fa fa-solid fa-filter"></i></button>
-    <button class="btn" id="search-btn"><i class="fa fa-solid fa-sort"></i></button>
-</section>
-
-<section id="blog-post">
-    <div id="same-line">
-        <p>Jalena Mathew</p>
-        <p>Aug 1</p>
-    </div>
-
-    <h3><a href="">10 Best practices in Java</a></h3>
-    <p>Java is a reliable and time-tested language. However, even
-        the most experienced developers make mistakes from time to
-        time. In order to write code that is easy to read and maintain,
-        it’s important to follow best</p>
-
-    <div id="same-line">
-        <div class="tags">
-            <p id="box">tags</p>
-            <p id="box">tags</p>
-            <p id="box">tags</p>
+<header>
+    <nav id="nav-bar">
+        <div id="same-line">
+            <h1>blog.com</h1>
+            <a id="draft" sec:authorize="isAuthenticated()" th:href="@{/drafts}">Drafts</a>
         </div>
-        <button class="btn" id="delete-btn"><i class="fa fa-solid fa-trash"></i></button>
-    </div>
-</section>
+        <div sec:authorize="isAnonymous()">
+            <a class="nav-link btn" th:href="@{/login}">Login</a>
+        </div>
 
-<section id="blog-post">
+        <div sec:authorize="isAuthenticated()">
+            <a class="nav-link btn" th:href="@{/logout}"><span sec:authentication="name">Logout</span></a>
+        </div>
+    </nav>
+</header>
+
+
+<section id="filter">
     <div id="same-line">
-        <p>Jalena Mathew</p>
-        <p>Aug 1</p>
+        <h3>Filter By :</h3>
+        <form th:action="@{/}">
+            <input class="btn" type="submit" value="Clear">
+        </form>
     </div>
 
-    <h3>10 Best practices in Java</h3>
-    <p>Java is a reliable and time-tested language. However, even
-        the most experienced developers make mistakes from time to
-        time. In order to write code that is easy to read and maintain,
-        it’s important to follow best</p>
+    <form method="get" th:action="@{/}">
+        <div class="container">
+            <div id="category">
+                <b>Author</b>
+            </div>
+            <div id="small" th:each="author : ${authorList}">
+                <input class="child" name="authorId" th:text="${author}" th:value="${authorStat.index}" type="checkbox">
+            </div>
+        </div>
+
+        <div class="container">
+            <div id="category">
+                <b>Published Date & Time</b>
+            </div>
+            <span>Date from:</span> <input id="input-box" type="date" name="dateFrom" th:field="*{filter.dateFrom}">
+            <span>Date to:</span><input id="input-box" type="date" name="dateTo" th:field="*{filter.dateTo}">
+        </div>
+
+        <div class="container">
+            <div id="category">
+                <b>Tags</b>
+            </div>
+            <div id="small" th:each="tag : ${tagList}">
+                <input class="child" name="tagId" th:text="${tag}" th:value="${tagStat.index}" type="checkbox">
+            </div>
+        </div>
+
+        <input type="submit" value="Apply">
+
+    </form>
 </section>
 
-<section id="blog-post">
-    <div id="same-line">
-        <p>Jalena Mathew</p>
-        <p>Aug 1</p>
-    </div>
+<main>
+    <section id="search-bar">
+        <a class="btn" id="edit-btn" th:href="@{/newpost}"><i
+                class="fa-solid fa-pen-to-square"></i></a>
 
-    <h3>10 Best practices in Java</h3>
-    <p>Java is a reliable and time-tested language. However, even
-        the most experienced developers make mistakes from time to
-        time. In order to write code that is easy to read and maintain,
-        it’s important to follow best</p>
-</section>
+        <form method="GET" th:action="@{/}">
+            <input id="search-field" placeholder="Search" th:name="search"
+                   th:value="${search}" type="search"/>
+        </form>
 
-<section id="blog-post">
-    <div id="same-line">
-        <p>Jalena Mathew</p>
-        <p>Aug 1</p>
-    </div>
+        <form method="GET" th:action="@{/}">
+            <div id="sort">
+                <label for="sort">Sorted by: </label>
+                <select id="search-field sort" name="order" onchange="this.form.submit()">
+                    <option value="asc">Published At: ascending</option>
+                    <option th:selected="${order == 'desc'}" value="desc">Published At: descending</option>
+                </select>
+                <input th:name="sortField" th:value="publishedAt" type="hidden"/>
+            </div>
+        </form>
+    </section>
 
-    <h3>10 Best practices in Java</h3>
-    <p>Java is a reliable and time-tested language. However, even
-        the most experienced developers make mistakes from time to
-        time. In order to write code that is easy to read and maintain,
-        it’s important to follow best</p>
-</section>
+    <section>
+        <div th:if="${search}">Showing Results for: <span th:text="${search}"></span></div>
+
+        <div class="tags" th:if="${filter.authorId} or ${filter.tagId}">
+            <p id="box" th:each="index : ${filter.authorId}" th:text="${authorList[index]}"></p>
+            <p id="box" th:each="index : ${filter.tagId}" th:text="${tagList[index]}"></p>
+        </div>
+
+        <p th:if="${postList.empty}" class="center">Post Unavailable</p>
+    </section>
+
+    <section id="blog-post" th:each="post : ${postList}">
+        <div id="same-line">
+            <p th:text="${post.author}"></p>
+            <p th:text="${#temporals.format(post.publishedAt, 'dd MMM')}"></p>
+        </div>
+
+        <h3>
+            <a th:href="@{/showPost/{id}(id=${post.id})}"
+               th:text="${post.title}"></a>
+        </h3>
+        <p th:text="${post.excerpt}"></p>
+
+        <div id="same-line">
+            <div class="tags">
+                <p id="box" th:each="tag : ${post.tag}" th:text="${tag.name}"></p>
+            </div>
+
+            <div th:if="${#authentication.name == post.user.username}">
+                <a class="btn" id="delete-btn"
+                   th:href="@{/delete/{id}(id=${post.id})}"><i class="fa fa-solid fa-trash"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination" id="same-line">
+            <li class="page-item" th:if="${currentPage != 0}"><a
+                    class="page-link"
+                    href="" th:href="@{'/?page='+${currentPage-1} +'&pageSize='+${pageSize}}">Previous</a></li>
+            <li class="page-item" th:if="${currentPage < totalPage-1}"><a
+                    class="page-link"
+                    href="#" th:href="@{'/?page='+${currentPage+1}+'&pageSize='+${pageSize}}">Next</a></li>
+        </ul>
+    </nav>
+</main>
 </body>
 </html>

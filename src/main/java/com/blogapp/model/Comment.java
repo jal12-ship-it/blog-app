@@ -1,5 +1,6 @@
 package com.blogapp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,9 +20,9 @@ public class Comment {
     private String email;
     @Column(length = 5000)
     private String message;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonBackReference
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Post post;
     private Date createdAt = new Date();
     private Date updatedAt = new Date();
-
 }

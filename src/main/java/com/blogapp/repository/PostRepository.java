@@ -10,35 +10,46 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
 
-    @Transactional
     @Modifying(clearAutomatically = true)
-    @Query(value = "update post p1 set p1.excerpt = left(p1.content, 100) where p1.id = :id", nativeQuery = true)
+    @Query(value = "update post set excerpt = substring(content, 1, 100) where id = :id", nativeQuery = true)
     void createExcerpt(@Param("id") Integer id);
 
-    Page<Post> findByIsPublished(Boolean isPublished, Pageable pageable);
+    @Query("select distinct p from Post p where p.isPublished = ?1")
+    Page<Post> findDistinctByIsPublished(Boolean isPublished, Pageable pageable);
 
-    @Query("select distinct p from Post p left join p.tag tag " +
-            "where (p.title like %:search% " +
-            "or p.content like %:search% " +
-            "or p.author like %:search% " +
-            "or tag.name like %:search%) " +
-            "and p.isPublished = :isPublished")
-    Page<Post> findByKeyword(String search, Pageable pageable, Boolean isPublished);
+    @Query("select distinct p from Post p where p.isPublished = ?1")
+    List<Post> findDistinctByIsPublishedList(Boolean isPublished, Pageable pageable);
 
-    @Query(value = "select distinct author from post where is_published = :isPublished", nativeQuery = true)
+    @Query("""
+            select distinct p from Post p left join p.tag tag
+            where (upper(p.title) like upper(concat('%', ?1, '%'))
+            or upper(p.content) like upper(concat('%', ?1, '%'))
+            or upper(p.author) like upper(concat('%', ?1, '%'))
+            or upper(tag.name) like upper(concat('%', ?1, '%')))
+            and p.isPublished = ?2""")
+    Page<Post> findByKeyword(String search, Boolean isPublished, Pageable pageable);
+
+    @Query("select distinct author from Post where isPublished = :isPublished")
     Set<String> findDistinctAuthor(Boolean isPublished);
 
-    Page<Post> findDistinctByAuthorInAndTag_NameIn(List<String> authors, List<String> names, Pageable pageable);
+    @Query("""
+            select distinct p from Post p inner join p.tag tag
+            where p.author in ?1 and tag.name in ?2 and p.publishedAt between ?3 and ?4""")
+    Page<Post> findByFilters(List<String> authors, List<String> names, LocalDate publishedAtStart,
+                             LocalDate publishedAtEnd, Pageable pageable);
 
-    @Query("select p from Post p where p.user.username = ?1 and p.isPublished = ?2")
+
     Page<Post> findByUser_UsernameAndIsPublished(String username, Boolean isPublished, Pageable pageable);
 
 
-//	Page<Post> findByIsPublishedPageable(Boolean isPublished, Pageable pageable);
+
 }

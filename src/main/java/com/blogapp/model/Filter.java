@@ -2,44 +2,50 @@ package com.blogapp.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.ToString;
 
-import javax.persistence.SecondaryTable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Getter
 @Setter
-
+@ToString
 public class Filter {
 
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private Date dateFrom;
+    private String dateFrom;
+    private String dateTo;
+    private String[] tagId;
+    private String[] authorId;
 
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private Date dateTo;
+    public LocalDate getLocalDateTo(String date) {
+        if (date != null) {
+            return date.isEmpty() ? LocalDate.now() : LocalDate.parse(date);
+        }
+        return LocalDate.now();
+    }
 
-//    public String getStartPublishedDate() {
-//        return startPublishedDate == null ? "0000-00-00" : startPublishedDate;
-//    }
-//
-//    public void setStartPublishedDate(String startPublishedDate) {
-//        this.startPublishedDate = startPublishedDate;
-//    }
-//
-//    public String getEndPublishedDate() {
-//        return endPublishedDate == null ? new SimpleDateFormat("yyyy-MM-dd").format(new Date()) : endPublishedDate;
-//    }
-//
-//    public void setEndPublishedDate(String endPublishedDate) {
-//        this.endPublishedDate = endPublishedDate;
-//    }
-//
-//    @Override
-//    public String toString() {
-//        return "Filter{" +
-//                "startPublishedDate='" + startPublishedDate + '\'' +
-//                ", endPublishedDate='" + endPublishedDate + '\'' +
-//                '}';
-//    }
+    public LocalDate getLocalDateFrom(String date) {
+        if (date != null) {
+            return date.isEmpty() ? LocalDate.of(2022, 10, 1) : LocalDate.parse(date);
+        }
+        return LocalDate.of(2022, 10, 1);
+    }
+
+    public List<String> getNameList(String[] idList, String[] allList) {
+        List<String> nameList = idList == null ? Arrays.asList(allList) : new ArrayList<>();
+
+        if (idList != null) {
+            Arrays.stream(idList)
+                    .map(id -> allList[Integer.parseInt(id)])
+                    .forEach(nameList::add);
+        }
+        return nameList;
+    }
+
+    public boolean isValid() {
+        return dateFrom != null || dateTo != null || tagId != null || authorId != null;
+    }
+
 }

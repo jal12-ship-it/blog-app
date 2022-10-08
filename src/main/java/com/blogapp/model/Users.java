@@ -1,5 +1,6 @@
 package com.blogapp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,7 +23,7 @@ public class Users {
     private String password;
     private boolean active;
     private String roles;
-
+    @JsonBackReference
     @OneToMany(cascade = CascadeType.ALL,
             mappedBy = "user")
     private Set<Post> post = new HashSet<>();

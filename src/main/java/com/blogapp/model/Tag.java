@@ -1,5 +1,6 @@
 package com.blogapp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,8 +20,7 @@ public class Tag {
     private String name;
     private Date createdAt = new Date();
     private Date updatedAt = new Date();
-    @ManyToMany(mappedBy = "tag", cascade = {CascadeType.PERSIST, CascadeType.DETACH}, fetch = FetchType.LAZY)
+    @JsonBackReference
+    @ManyToMany(mappedBy = "tag", cascade = {CascadeType.PERSIST, CascadeType.DETACH}, fetch = FetchType.EAGER)
     private Set<Post> post = new HashSet<>();
-
-
 }
