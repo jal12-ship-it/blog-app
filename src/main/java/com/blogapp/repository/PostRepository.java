@@ -33,7 +33,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("""
             select distinct p from Post p left join p.tag tag
             where (p.title like '%:search%'
-            or p.content like '%:search%'
+//             or p.content like '%:search%'
             or p.author like '%:search%'
             or tag.name like '%:search%')
             and p.isPublished = ?2""")
