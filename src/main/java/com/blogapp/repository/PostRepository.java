@@ -19,8 +19,9 @@ import java.util.Set;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
 
+    @Transactional
     @Modifying(clearAutomatically = true)
-    @Query(value = "update post set excerpt = substring(content, 1, 100) where id = :id", nativeQuery = true)
+    @Query("update Post set excerpt = substring(content, 1, 100) where id = :id")
     void createExcerpt(@Param("id") Integer id);
 
     @Query("select distinct p from Post p where p.isPublished = ?1")

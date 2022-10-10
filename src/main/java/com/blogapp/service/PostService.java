@@ -1,17 +1,13 @@
 package com.blogapp.service;
 
-import com.blogapp.model.Filter;
 import com.blogapp.model.MyUserDetails;
 import com.blogapp.model.Post;
-import com.blogapp.model.Tag;
 import com.blogapp.repository.PostRepository;
 import com.blogapp.repository.TagRepository;
 import com.blogapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

@@ -48,6 +48,8 @@ public class SecurityConfig {
                 .usernameParameter("email")
                 .permitAll()
                 .and()
+                .httpBasic()
+                .and()
                 .build();
     }
 
